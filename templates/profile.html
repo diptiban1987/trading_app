@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Profile - Kishan X</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="page-flex">
+<header class="main-header">
+    <div class="header-content">
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="KishanX Logo" class="logo">
+        <span class="company-name">Kishan X Trading Signals</span>
+        <nav class="nav-links">
+            <a href="/" {% if request.path == '/' %}class="active"{% endif %}>Forex</a>
+            <a href="/otc" {% if request.path == '/otc' %}class="active"{% endif %}>OTC</a>
+            <a href="/indian" {% if request.path == '/indian' %}class="active"{% endif %}>Indian</a>
+            <a href="/dashboard">Dashboard</a>
+            <a href="/logout">Logout</a>
+        </nav>
+    </div>
+</header>
+<div class="container">
+    <h2>Profile</h2>
+    <p><strong>Username:</strong> {{ user['username'] }}</p>
+    <p><strong>Registered at:</strong> {{ user['registered_at'] }}</p>
+    <p><strong>Last login:</strong> {{ user['last_login'] or 'N/A' }}</p>
+    <h3>Change Password</h3>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <p class="error">{{ message }}</p>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+    <form method="POST">
+        <input type="password" name="new_password" placeholder="New Password" required><br>
+        <button type="submit">Change Password</button>
+    </form>
+</div>
+<footer class="main-footer">
+    <div class="footer-content">
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="KishanX Logo" class="footer-logo">
+        <span>&copy; {{ 2024 }} KishanX. All rights reserved.</span>
+    </div>
+</footer>
+<style>
+html, body.page-flex {
+    height: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body.page-flex {
+    flex: 1 0 auto;
+    margin: 0;
+    padding: 0;
+}
+.main-header {
+    background: #2a4d8f;
+    color: #fff;
+    padding: 0 0 0 0;
+    box-shadow: 0 2px 8px rgba(42,77,143,0.08);
+}
+.header-content {
+    display: flex;
+    align-items: center;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 12px 0 12px 0;
+}
+.logo {
+    height: 38px;
+    margin-right: 18px;
+}
+.company-name {
+    font-size: 1.35rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    flex: 1;
+}
+.nav-links a {
+    color: #fff;
+    text-decoration: none;
+    margin-left: 18px;
+    font-weight: 500;
+    font-size: 1.05rem;
+    transition: text-decoration 0.2s;
+}
+.nav-links a:hover {
+    text-decoration: underline;
+}
+.main-footer {
+    margin-top: auto;
+    background: #2a4d8f;
+    color: #fff;
+    text-align: center;
+    padding: 18px 0 12px 0;
+    box-sizing: border-box;
+}
+.footer-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+}
+.footer-logo {
+    height: 28px;
+}
+</style>
+</body>
+</html> 

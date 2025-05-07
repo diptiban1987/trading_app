@@ -1,0 +1,19 @@
+Flask
+requests
+scipy
+reportlab
+
+import requests
+
+def get_realtime_forex(pair, api_key):
+    # Example: pair = "EURUSD"
+    from_symbol = pair[:3]
+    to_symbol = pair[3:]
+    url = f"https://www.alphavantage.co/query?function=CURRENCY_EXCHANGE_RATE&from_currency={from_symbol}&to_currency={to_symbol}&apikey={api_key}"
+    response = requests.get(url)
+    data = response.json()
+    try:
+        rate = data["Realtime Currency Exchange Rate"]["5. Exchange Rate"]
+        return float(rate)
+    except Exception:
+        return None 
