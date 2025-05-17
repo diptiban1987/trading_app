@@ -1,0 +1,4 @@
+35BDZ47V6D5T4B8G
+
+if __name__ == "__main__":
+    app.run(debug=True)

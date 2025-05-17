@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>KishanX Indian Signals</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body class="page-flex" id="bodyRoot">
+<header class="main-header">
+    <div class="header-content">
+        <div class="header-left">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="KishanX Logo" class="logo">
+            <span class="company-name">Kishan X Trading Signals</span>
+        </div>
+        <div class="header-right">
+            <nav class="nav-links">
+                <a href="/" {% if request.path == '/' %}class="active"{% endif %}>Forex</a>
+                <a href="/otc" {% if request.path == '/otc' %}class="active"{% endif %}>OTC</a>
+                <a href="/indian" {% if request.path == '/indian' %}class="active"{% endif %}>Indian</a>
+                <a href="/dashboard">Dashboard</a>
+                <a href="/profile" {% if request.path == '/profile' %}class="active"{% endif %}>Profile</a>
+                <a href="/legal" {% if request.path == '/legal' %}class="active"{% endif %}>Legal</a>
+                <a href="/logout">Logout</a>
+                <button id="darkModeToggle" title="Toggle dark mode" class="dark-toggle-btn">
+                    <span id="darkModeIcon">🌙</span>
+                </button>
+            </nav>           
+        </div>
+    </div>
+</header>
+
+<div class="main-content three-col" style="display:flex;gap:32px;justify-content:center;align-items:flex-start;max-width:1200px;margin:32px auto 0 auto;padding:0 8px;width:100%;flex-wrap:nowrap;">
+    {% if current_rate %}
+    <div class="rate-box card-col">
+        <div class="rate-title" id="rateTitle">
+            Current Rate for <span id="pairName">{{ selected_pair }}</span>
+            <span id="brokerName">({{ selected_broker }})</span>
+        </div>
+        <div class="callput-row">
+            <div class="call-box">
+                <span class="call-label">CALL</span>
+                <div class="option-section">
+                    <div class="option-heading">Black-Scholes Option Price</div>
+                    <span class="call-value" id="callValue">{{ call_price if call_price is not none else current_rate }}</span>
+                </div>
+                <div class="option-section">
+                    <div class="option-heading">Current Market Price</div>
+                    <span class="market-label"> <span id="callMarketValue">{{ current_rate }}</span></span>
+                </div>
+            </div>
+            <div class="put-box">
+                <span class="put-label">PUT</span>
+                <div class="option-section">
+                    <div class="option-heading">Black-Scholes Option Price</div>
+                    <span class="put-value" id="putValue">{{ put_price if put_price is not none else current_rate }}</span>
+                </div>
+                <div class="option-section">
+                    <div class="option-heading">Current Market Price</div>
+                    <span class="market-label"> <span id="putMarketValue">{{ current_rate }}</span></span>
+                </div>
+            </div>
+        </div>
+        <div class="broker-payout" id="brokerPayout">
+            <strong>Broker:</strong> <span id="brokerName2">{{ selected_broker }}</span> &nbsp; | &nbsp;
+            <strong>Payout/Odds:</strong> <span id="payoutVal">{{ (payout * 100) | round(0) }}%</span>
+        </div>
+        <div class="pricing-params" id="pricingParams">
+            <strong>Pricing Parameters:</strong><br>
+            Volatility (σ): <span id="volatilityVal">{{ volatility }}</span><br>
+            Expiry (T, years): <span id="expiryVal">{{ expiry }}</span><br>
+            Risk-free Rate (r): <span id="riskFreeVal">{{ risk_free_rate }}</span>
+        </div>
+    </div>
+    {% endif %}
+    <div class="graph-card card-col">
+        <div class="graph-title">Real-Time Price Chart</div>
+        <canvas id="priceChart" height="60"></canvas>
+        <div id="noDataMsg" style="display:none;color:#d32f2f;text-align:center;margin-top:8px;font-size:1.05rem;">No real-time price data available.</div>
+    </div>
+    <form method="POST" class="signal-form card-col">
+        <h2>Kishan X Signal Generator</h2>
+        {% if error %}<p class="error">{{ error }}</p>{% endif %}
+        <label>Pair:</label>
+        <select name="pair" id="pairSelect">
+            {% for pair in pairs %}
+                <option value="{{ pair }}" {% if pair == selected_pair %}selected{% endif %}>{{ pair }}</option>
+            {% endfor %}
+        </select>
+        <label>Broker:</label>
+        <select name="broker">{% for broker in brokers %}<option {% if broker == selected_broker %}selected{% endif %}>{{ broker }}</option>{% endfor %}</select>
+        <label>Signal Type:</label>
+        <select name="signal_type" required>
+            <option value="CALL">CALL</option>
+            <option value="PUT">PUT</option>
+            <option value="BOTH">BOTH</option>
+        </select>
+        <label>Start Time:</label>
+        <div class="time-select">
+            <select name="start_hour">
+                {% for h in range(0,24) %}
+                    <option value="{{ '%02d' % h }}">{{ '%02d' % h }}</option>
+                {% endfor %}
+            </select> :
+            <select name="start_minute">
+                {% for m in range(0,60,5) %}
+                    <option value="{{ '%02d' % m }}">{{ '%02d' % m }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <label>End Time:</label>
+        <div class="time-select">
+            <select name="end_hour">
+                {% for h in range(0,24) %}
+                    <option value="{{ '%02d' % h }}">{{ '%02d' % h }}</option>
+                {% endfor %}
+            </select> :
+            <select name="end_minute">
+                {% for m in range(0,60,5) %}
+                    <option value="{{ '%02d' % m }}">{{ '%02d' % m }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <button type="submit">Generate</button>
+    </form>
+    {% if signals %}
+    <div class="signals-list card-col">
+        <h2>Generated Signals</h2>
+        {% for s in signals %}
+            <div class="signal {{ s.direction }}">{{ s.time }} - {{ s.pair }} - {{ s.direction }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>
+<footer class="main-footer">
+    <div class="footer-content">
+        <img src="{{ url_for('static', filename='images/logo2.png') }}" alt="KishanX Logo" class="footer-logo">
+        <span>&copy; {{ 2024 }} Kishan X Trading Signals. All rights reserved.</span>
+    </div>
+</footer>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+let priceData = [];
+let priceLabels = [];
+let priceChart = null;
+
+function updatePrices() {
+    const pair = document.getElementById('pairSelect').value;
+    const broker = document.querySelector('select[name="broker"]').value;
+    // Update broker name and payout
+    if(document.getElementById('brokerName')) document.getElementById('brokerName').textContent = `(${broker})`;
+    if(document.getElementById('brokerName2')) document.getElementById('brokerName2').textContent = broker;
+    let payout = 0.75;
+    switch(broker) {
+        case 'Quotex': payout = 0.85; break;
+        case 'Pocket Option': payout = 0.80; break;
+        case 'Binolla': payout = 0.78; break;
+        case 'IQ Option': payout = 0.82; break;
+        case 'Bullex': payout = 0.75; break;
+        case 'Exnova': payout = 0.77; break;
+    }
+    if(document.getElementById('payoutVal')) document.getElementById('payoutVal').textContent = Math.round(payout * 100) + '%';
+    fetch(`/api/price/${pair}`)
+        .then(response => response.json())
+        .then(data => {
+            if(document.getElementById('pairName')) document.getElementById('pairName').textContent = pair;
+            if(document.getElementById('callValue')) document.getElementById('callValue').textContent = data.call_price !== null ? data.call_price.toFixed(6) : 'N/A';
+            if(document.getElementById('putValue')) document.getElementById('putValue').textContent = data.put_price !== null ? data.put_price.toFixed(6) : 'N/A';
+            if(document.getElementById('callMarketValue')) document.getElementById('callMarketValue').textContent = data.rate !== null ? data.rate : 'N/A';
+            if(document.getElementById('putMarketValue')) document.getElementById('putMarketValue').textContent = data.rate !== null ? data.rate : 'N/A';
+            if(document.getElementById('rateTitle')) document.getElementById('rateTitle').innerHTML = `Current Rate for <span id='pairName'>${pair}</span> <span id='brokerName'>(${broker})</span>`;
+            if(document.getElementById('brokerName2')) document.getElementById('brokerName2').textContent = broker;
+            if(document.getElementById('payoutVal')) document.getElementById('payoutVal').textContent = Math.round(payout * 100) + '%';
+            if(document.getElementById('pricingParams')) document.getElementById('pricingParams').innerHTML = `
+                <strong>Pricing Parameters:</strong><br>
+                Volatility (σ): <span id='volatilityVal'>${data.volatility}</span><br>
+                Expiry (T, years): <span id='expiryVal'>${data.expiry}</span><br>
+                Risk-free Rate (r): <span id='riskFreeVal'>${data.risk_free_rate}</span>
+            `;
+            // Update chart
+            const now = new Date();
+            const label = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', second:'2-digit'});
+            const noDataMsg = document.getElementById('noDataMsg');
+            if (typeof data.rate === 'number' && !isNaN(data.rate)) {
+                if (priceLabels.length > 30) { priceLabels.shift(); priceData.shift(); }
+                priceLabels.push(label);
+                priceData.push(data.rate);
+                if (priceChart) {
+                    priceChart.data.labels = priceLabels;
+                    priceChart.data.datasets[0].data = priceData;
+                    priceChart.update();
+                }
+                if (noDataMsg) noDataMsg.style.display = 'none';
+            } else {
+                if (noDataMsg) noDataMsg.style.display = 'block';
+            }
+        });
+}
+setInterval(updatePrices, 10000); // Update every 10 seconds
+
+document.addEventListener('DOMContentLoaded', function() {
+    updatePrices();
+    document.getElementById('pairSelect').addEventListener('change', function() {
+        priceLabels = [];
+        priceData = [];
+        updatePrices();
+    });
+    document.querySelector('select[name="broker"]').addEventListener('change', updatePrices);
+    // Chart.js setup
+    const canvas = document.getElementById('priceChart');
+    if (canvas) {
+        const ctx = canvas.getContext('2d');
+        priceChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: priceLabels,
+                datasets: [{
+                    label: 'Real-Time Price',
+                    data: priceData,
+                    borderColor: '#2a4d8f',
+                    backgroundColor: 'rgba(42,77,143,0.08)',
+                    tension: 0.25,
+                    pointRadius: 2,
+                    borderWidth: 2,
+                    fill: true,
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { display: true, title: { display: false } },
+                    y: { display: true, title: { display: false } }
+                }
+            }
+        });
+    }
+});
+</script>
+<style>
+@import url('https://fonts.googleapis.com/css?family=Segoe+UI:400,700,900&display=swap');
+.main-header {
+    background: linear-gradient(90deg, #2a4d8f 60%, #3b7dd8 100%);
+    box-shadow: 0 2px 12px rgba(42,77,143,0.08);
+    border-bottom: 1.5px solid #e3eaf6;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+.header-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 12px 16px 12px 16px;
+    width: 100%;
+    box-sizing: border-box;
+}
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+.logo {
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 2px 8px rgba(42,77,143,0.10);
+    background: #fff;
+    padding: 3px;
+    border: 2px solid #e3eaf6;
+}
+.company-name {
+    font-size: 1.5rem;
+    font-weight: 900;
+    letter-spacing: 1.5px;
+    color: #fff;
+    text-shadow: 0 2px 8px rgba(42,77,143,0.10);
+    font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+}
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.nav-links a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 1.08rem;
+    padding: 8px 22px;
+    border-radius: 999px;
+    background: rgba(42,77,143,0.10);
+    transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+    box-shadow: 0 1px 4px rgba(42,77,143,0.06);
+    border: 1.5px solid transparent;
+}
+.nav-links a:hover, .nav-links a.active {
+    background: #fff;
+    color: #2a4d8f;
+    box-shadow: 0 2px 8px rgba(42,77,143,0.12);
+    border: 1.5px solid #3b7dd8;
+}
+.dark-toggle-btn {
+    margin-left: 6px;
+    background: rgba(42,77,143,0.10);
+    border: none;
+    cursor: pointer;
+    font-size: 1.1rem;
+    outline: none;
+    border-radius: 50%;
+    padding: 6px 8px;
+    color: #2a4d8f;
+    transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 1px 4px rgba(42,77,143,0.06);
+    border: 1.5px solid transparent;
+    height: 32px;
+    width: 32px;
+}
+.dark-toggle-btn:hover {
+    background: #2a4d8f;
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(42,77,143,0.12);
+    border: 1.5px solid #3b7dd8;
+}
+.main-footer {
+    padding: 7px 0 4px 0;
+    font-size: 0.98rem;
+}
+.footer-content {
+    gap: 8px;
+}
+.footer-logo {
+    height: 18px;
+    width: 18px;
+}
+@media (max-width:900px) {
+    .header-content {padding: 4px 4px;}
+    .logo {height: 22px;width: 22px;}
+    .company-name {font-size: 0.98rem;}
+    .main-footer {font-size: 0.93rem;}
+    .footer-logo {height: 14px;width: 14px;}
+}
+@media (max-width:600px) {
+    .header-content {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 6px 4vw 6px 4vw;
+        height: auto;
+    }
+    .header-left {
+        flex-direction: row;
+        align-items: center;
+        gap: 8px;
+        width: 100%;
+    }
+    .logo {
+        height: 22px;
+        width: 22px;
+        margin-right: 6px;
+    }
+    .company-name {
+        font-size: 1rem;
+        line-height: 1.2;
+    }
+    .header-right {
+        width: 100%;
+        margin-top: 6px;
+    }
+    .nav-links {
+        flex-direction: column;
+        align-items: stretch;
+        width: 100%;
+        gap: 2px;
+    }
+    .nav-links a {
+        font-size: 0.98rem;
+        padding: 8px 0;
+        border-radius: 8px;
+        width: 100%;
+        text-align: left;
+        margin: 0;
+    }
+    .dark-toggle-btn {
+        margin-left: 0;
+        margin-top: 6px;
+        align-self: flex-end;
+    }
+}
+.main-content.three-col {display:flex;flex-wrap:nowrap;gap:32px;justify-content:center;align-items:flex-start;max-width:1200px;margin:32px auto 0 auto;padding:0 8px;width:100%;}
+.main-content.three-col > * {flex:1 1 0;min-width:0;max-width:380px;}
+.card-col {background:#fff;border-radius:16px;box-shadow:0 2px 16px rgba(42,77,143,0.10);padding:24px 24px 18px 24px;margin-bottom:24px;transition:box-shadow 0.2s,border 0.2s;}
+@media (max-width:1100px) {.main-content.three-col{flex-direction:column;align-items:stretch;gap:18px;}.main-content.three-col > *{max-width:100%;min-width:0;}}
+</style>
+</body>
+</html> 

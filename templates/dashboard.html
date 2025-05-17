@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard - Kishan X</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="page-flex">
+<header class="main-header">
+    <div class="header-content">
+        <div class="header-left">
+            <img src="{{ url_for('static', filename='logo5.png') }}" alt="Kishan X Logo" class="logo">
+            <span class="company-name">Kishan X Trading Signals</span>
+        </div>
+        <button class="mobile-menu-btn" aria-label="Toggle menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        <nav class="nav-links">
+            <a href="/" {% if request.path == '/' %}class="active"{% endif %}>Forex</a>
+            <a href="/otc" {% if request.path == '/otc' %}class="active"{% endif %}>OTC</a>
+            <a href="/indian" {% if request.path == '/indian' %}class="active"{% endif %}>Indian</a>
+            <a href="/dashboard" class="nav-link active">Dashboard</a>
+            <a href="/market" class="nav-link">Market Data</a>
+            <a href="/profile" {% if request.path == '/profile' %}class="active"{% endif %}>Profile</a>
+            <a href="/legal" {% if request.path == '/legal' %}class="active"{% endif %}>Legal</a>
+            <a href="/logout">Logout</a>
+            <button id="themeToggle" class="theme-toggle" title="Toggle dark mode" aria-label="Toggle dark mode">
+                <span id="themeIcon">🌙</span>
+            </button>
+        </nav>
+    </div>
+</header>
+<div class="main-content dashboard-flex dashboard-grid">
+    <div class="dashboard-left-col">
+        <div class="dashboard-card demo-timer-card" id="demoTimerCard">
+            <div class="timer-title">Demo Time Remaining</div>
+            <div id="demoTime" class="blinking-timer">--:--</div>
+        </div>
+        <div class="dashboard-card welcome-card">
+            <h2>Dashboard</h2>
+            <p><strong>Welcome, {{ user['username'] }}!</strong></p>
+            <div class="dashboard-stats">
+                <div class="stat-item">
+                    <span class="stat-label">Total Signals Generated</span>
+                    <span class="stat-value">{{ total }}</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Last Login</span>
+                    <span class="stat-value">{{ user['last_login'] or 'N/A' }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="dashboard-right-col">
+        <div class="dashboard-card signals-card">
+            <h3>Recent Signals</h3>
+            <div class="signals-table-wrapper scrollable-signals">
+            <table class="signals-table">
+                <tr><th>Time</th><th>Pair</th><th>Direction</th><th>Created At</th></tr>
+                {% for s in signals %}
+                <tr>
+                    <td>{{ s['time'] }}</td>
+                    <td>{{ s['pair'] }}</td>
+                    <td>{{ s['direction'] }}</td>
+                    <td>{{ s['created_at'][:16].replace('T',' ') }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+            </div>
+        </div>
+        <div class="dashboard-card analytics-card">
+            <h3>Analytics</h3>
+            <div class="dashboard-charts">
+                <div class="chart-card">
+                    <canvas id="pairChart"></canvas>
+                </div>
+                <div class="chart-card">
+                    <canvas id="directionChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<footer class="main-footer">
+    <div class="footer-content">
+        <img src="{{ url_for('static', filename='logo2.png') }}" alt="KishanX Logo" class="footer-logo">
+        <span>&copy; {{ 2024 }} Kishan X Trading Signals. All rights reserved.</span>
+    </div>
+</footer>
+
+<script type="application/json" id="dashboard-data">
+{
+  "DEMO_TIMEOUT_MINUTES": {{ DEMO_TIMEOUT_MINUTES|default(15)|tojson }},
+  "pair_labels": {{ pair_labels|default([])|tojson }},
+  "pair_counts": {{ pair_counts|default([])|tojson }},
+  "direction_labels": {{ direction_labels|default([])|tojson }},
+  "direction_counts": {{ direction_counts|default([])|tojson }}
+}
+</script>
+<script>
+const dashboardData = JSON.parse(document.getElementById('dashboard-data').textContent);
+window.DEMO_TIMEOUT_MINUTES = dashboardData.DEMO_TIMEOUT_MINUTES;
+const pairLabels = dashboardData.pair_labels;
+const pairCounts = dashboardData.pair_counts;
+const directionLabels = dashboardData.direction_labels;
+const directionCounts = dashboardData.direction_counts;
+
+const pairData = {
+    labels: pairLabels,
+    datasets: [{
+        label: 'Signals by Pair',
+        data: pairCounts,
+        backgroundColor: '#3b7dd8',
+    }]
+};
+const directionData = {
+    labels: directionLabels,
+    datasets: [{
+        label: 'Signals by Direction',
+        data: directionCounts,
+        backgroundColor: ['#22c55e','#ef4444'],
+    }]
+};
+new Chart(document.getElementById('pairChart'), {
+    type: 'bar',
+    data: pairData,
+    options: {responsive:true,plugins:{legend:{display:false}}}
+});
+new Chart(document.getElementById('directionChart'), {
+    type: 'pie',
+    data: directionData,
+    options: {responsive:true,plugins:{legend:{position:'bottom'}}}
+});
+// Dark theme toggle
+const themeToggle = document.getElementById('themeToggle');
+const themeIcon = document.getElementById('themeIcon');
+function setTheme(dark) {
+    if (dark) {
+        document.body.classList.add('dark');
+        themeIcon.textContent = '☀️';
+    } else {
+        document.body.classList.remove('dark');
+        themeIcon.textContent = '🌙';
+    }
+    localStorage.setItem('theme', dark ? 'dark' : 'light');
+}
+if (themeToggle) {
+    themeToggle.addEventListener('click', () => {
+        setTheme(!document.body.classList.contains('dark'));
+    });
+}
+// On load, set theme from localStorage
+if (localStorage.getItem('theme') === 'dark') {
+    setTheme(true);
+}
+function updateDemoTimer() {
+    fetch('/get_demo_time')
+        .then(response => response.json())
+        .then(data => {
+            const el = document.getElementById('demoTime');
+            if (el) {
+                el.textContent = data.time_left;
+            }
+        });
+}
+setInterval(updateDemoTimer, 1000);
+document.addEventListener('DOMContentLoaded', updateDemoTimer);
+
+// Mobile menu functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+    const navLinks = document.querySelector('.nav-links');
+    
+    mobileMenuBtn.addEventListener('click', function() {
+        this.classList.toggle('active');
+        navLinks.classList.toggle('active');
+    });
+
+    // Close menu when clicking outside
+    document.addEventListener('click', function(event) {
+        if (!event.target.closest('.nav-links') && !event.target.closest('.mobile-menu-btn')) {
+            mobileMenuBtn.classList.remove('active');
+            navLinks.classList.remove('active');
+        }
+    });
+
+    // Close menu when clicking a link
+    navLinks.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+            mobileMenuBtn.classList.remove('active');
+            navLinks.classList.remove('active');
+        });
+    });
+});
+</script>
+<style>
+.main-content.dashboard-flex.dashboard-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 32px;
+    max-width: 950px;
+    margin: 32px auto 0 auto;
+    padding: 0 8px;
+    width: 100%;
+    box-sizing: border-box;
+    align-items: flex-start;
+}
+.dashboard-left-col, .dashboard-right-col {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+.dashboard-left-col {
+    min-width: 260px;
+    max-width: 340px;
+}
+.dashboard-right-col {
+    min-width: 320px;
+    max-width: 600px;
+}
+.dashboard-card {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 24px rgba(42,77,143,0.10);
+    padding: 22px 20px 18px 20px;
+    width: 100%;
+    margin-bottom: 0;
+    font-size: 1.04rem;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+.welcome-card {
+    font-size: 1.08rem;
+    background: linear-gradient(90deg, #f7fafd 60%, #e3eaf6 100%);
+    box-shadow: 0 2px 12px rgba(42,77,143,0.08);
+}
+.demo-timer-card {
+    background: linear-gradient(90deg, #fff3cd 60%, #ffe082 100%);
+    box-shadow: 0 2px 16px rgba(211,47,47,0.10);
+    align-items: center;
+    justify-content: center;
+    padding: 18px 0 12px 0;
+    border: 2px solid #ffe082;
+}
+.timer-title {
+    font-size: 1.13rem;
+    font-weight: 700;
+    color: #d32f2f;
+    margin-bottom: 8px;
+    letter-spacing: 0.5px;
+    text-shadow: 0 1px 4px #fffbe6;
+}
+#demoTime.blinking-timer {
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: #d32f2f;
+    background: #fffbe6;
+    padding: 14px 38px;
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(42,77,143,0.08);
+    margin-bottom: 0;
+    animation: blink 1s steps(2, start) infinite;
+    border: 2px solid #ffe082;
+    letter-spacing: 2px;
+}
+.signals-card, .analytics-card {
+    background: linear-gradient(90deg, #f7fafd 60%, #e3eaf6 100%);
+    box-shadow: 0 2px 12px rgba(42,77,143,0.08);
+    font-size: 1.01rem;
+}
+@media (max-width: 900px) {
+    .main-content.dashboard-flex.dashboard-grid {
+        grid-template-columns: 1fr;
+        gap: 18px;
+        max-width: 98vw;
+    }
+    .dashboard-left-col, .dashboard-right-col {
+        max-width: 98vw;
+        min-width: 0;
+    }
+}
+@media (max-width: 600px) {
+    .main-content.dashboard-flex.dashboard-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+        padding: 0 2vw;
+    }
+    .dashboard-card {
+        padding: 10px 4px 8px 4px;
+        max-width: 98vw;
+    }
+    .welcome-card, .signals-card, .analytics-card, .demo-timer-card {
+        max-width: 98vw;
+    }
+    #demoTime.blinking-timer {
+        font-size: 1.3rem;
+        padding: 8px 10vw;
+    }
+}
+.main-header {
+    background: #fff;
+    box-shadow: 0 2px 12px rgba(42,77,143,0.08);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+.header-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 12px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.logo {
+    height: 40px;
+    width: auto;
+}
+.company-name {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #2a4d8f;
+}
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+.nav-links a {
+    color: #2a4d8f;
+    text-decoration: none;
+    font-weight: 500;
+    padding: 8px 12px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+.nav-links a:hover {
+    background: rgba(42,77,143,0.1);
+}
+.nav-links a.active {
+    background: #2a4d8f;
+    color: #fff;
+}
+.theme-toggle {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    font-size: 1.2rem;
+    border-radius: 50%;
+    transition: background 0.3s ease;
+}
+.theme-toggle:hover {
+    background: rgba(42,77,143,0.1);
+}
+.mobile-menu-btn {
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 30px;
+    height: 21px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    z-index: 1001;
+}
+.mobile-menu-btn span {
+    display: block;
+    width: 100%;
+    height: 3px;
+    background: #2a4d8f;
+    border-radius: 3px;
+    transition: all 0.3s ease;
+}
+@media (max-width: 768px) {
+    .mobile-menu-btn {
+        display: flex;
+    }
+    .nav-links {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 250px;
+        height: 100vh;
+        background: #fff;
+        flex-direction: column;
+        padding: 80px 24px 24px;
+        gap: 16px;
+        transition: right 0.3s ease;
+        box-shadow: -2px 0 12px rgba(42,77,143,0.1);
+    }
+    .nav-links.active {
+        right: 0;
+    }
+    .nav-links a {
+        width: 100%;
+        text-align: left;
+        padding: 12px 16px;
+    }
+    .company-name {
+        font-size: 1rem;
+    }
+    .logo {
+        height: 32px;
+    }
+    .header-content {
+        padding: 8px 16px;
+    }
+    .mobile-menu-btn.active span:nth-child(1) {
+        transform: translateY(9px) rotate(45deg);
+    }
+    .mobile-menu-btn.active span:nth-child(2) {
+        opacity: 0;
+    }
+    .mobile-menu-btn.active span:nth-child(3) {
+        transform: translateY(-9px) rotate(-45deg);
+    }
+}
+footer.main-footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100vw;
+    height: 55px;
+    min-height: 55px;
+    max-height: 55px;
+    background: #2a4d8f;
+    color: #fff;
+    text-align: center;
+    padding: 0;
+    box-sizing: border-box;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.footer-logo {
+    height: 28px;
+    width: auto;
+    margin-right: 10px;
+    vertical-align: middle;
+    display: inline-block;
+}
+.footer-content {
+    font-size: 1.05rem;
+    display: flex;
+    align-items: center;
+    height: 55px;
+    line-height: 55px;
+    justify-content: center;
+}
+.main-content.dashboard-flex.dashboard-grid {
+    margin-top: 65px;
+    margin-bottom: 65px;
+}
+@media (max-width: 600px) {
+    .main-header, .header-content, .footer-content, footer.main-footer {
+        height: 55px !important;
+        min-height: 55px !important;
+        max-height: 55px !important;
+    }
+    .logo {
+        height: 24px;
+        margin-right: 6px;
+    }
+    .company-name, .footer-content {
+        font-size: 0.98rem;
+    }
+    .nav-links a {
+        font-size: 0.98rem;
+        padding: 6px 10px;
+        height: 32px;
+        line-height: 32px;
+    }
+    .footer-logo {
+        height: 18px;
+        margin-right: 6px;
+    }
+    .main-content.dashboard-flex.dashboard-grid {
+        margin-top: 60px;
+        margin-bottom: 60px;
+    }
+}
+.dashboard-card.analytics-card {
+    min-height: 450px;
+    padding: 24px;
+    background: #ffffff;
+    display: flex;
+    flex-direction: column;
+}
+
+.dashboard-card.analytics-card h3 {
+    margin-bottom: 20px;
+    color: #2a4d8f;
+    font-size: 1.2rem;
+}
+
+.dashboard-charts {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    flex: 1;
+    min-height: 380px;
+}
+
+.chart-card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 16px;
+    height: 380px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 12px rgba(42,77,143,0.08);
+    border: 1px solid rgba(42,77,143,0.15);
+    position: relative;
+}
+
+.chart-card canvas {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90% !important;
+    height: 90% !important;
+}
+
+@media (max-width: 768px) {
+    .dashboard-charts {
+        grid-template-columns: 1fr;
+        gap: 20px;
+        min-height: 320px;
+    }
+    
+    .chart-card {
+        height: 320px;
+        padding: 12px;
+    }
+    
+    .dashboard-card.analytics-card {
+        min-height: auto;
+        padding: 20px;
+    }
+}
+</style>
+</body>
+</html> 

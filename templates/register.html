@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Register - Kishan X</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body class="auth-bg">
+{% if session.get('user_id') %}
+<nav class="nav-links" style="margin-bottom: 18px; text-align: center;">
+    <a href="/" {% if request.path == '/' %}class="active"{% endif %}>Forex</a>
+    <a href="/otc" {% if request.path == '/otc' %}class="active"{% endif %}>OTC</a>
+    <a href="/indian" {% if request.path == '/indian' %}class="active"{% endif %}>Indian</a>
+    <a href="/dashboard">Dashboard</a>
+    <a href="/logout">Logout</a>
+</nav>
+{% endif %}
+<div class="auth-container">
+    <div class="auth-card">
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="KishanX Logo" class="auth-logo-top">
+        <div class="auth-title">Kishan X Trading Signals</div>
+        <h2>Register</h2>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <p class="error">{{ message }}</p>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+        <form method="POST">
+            <input type="text" name="username" placeholder="Username" required>
+            <input type="password" name="password" placeholder="Password" required>
+            <button type="submit">Register</button>
+        </form>
+        <p class="auth-link">Already have an account? <a href="/login">Login</a></p>
+    </div>
+</div>
+<style>
+body.auth-bg {
+    min-height: 100vh;
+    background: url('{{ url_for('static', filename='images/trader-bg.jpg') }}') no-repeat center center fixed;
+    background-size: cover;
+    display: flex;
+    flex-direction: column;
+}
+.auth-container {
+    flex: 1 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 80vh;
+}
+.auth-card {
+    background: rgba(255,255,255,0.85);
+    box-shadow: 0 8px 32px 0 rgba(31,38,135,0.18);
+    border-radius: 18px;
+    padding: 36px 32px 28px 32px;
+    max-width: 350px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    backdrop-filter: blur(6px);
+}
+.auth-logo {
+    height: 54px;
+    margin-bottom: 10px;
+}
+.auth-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #2a4d8f;
+    margin-bottom: 18px;
+    letter-spacing: 1px;
+    text-align: center;
+}
+.auth-card h2 {
+    margin-bottom: 18px;
+    color: #2a4d8f;
+    font-size: 1.4rem;
+    font-weight: 600;
+}
+.auth-card input[type="text"], .auth-card input[type="password"] {
+    width: 100%;
+    padding: 10px 12px;
+    margin-bottom: 14px;
+    border: 1.5px solid #cfd8dc;
+    border-radius: 7px;
+    font-size: 1rem;
+    background: #f9fafb;
+    transition: border 0.2s;
+}
+.auth-card input:focus {
+    border: 1.5px solid #2a4d8f;
+    outline: none;
+}
+.auth-card button {
+    width: 100%;
+    padding: 12px;
+    background: linear-gradient(90deg, #2a4d8f 60%, #3b7dd8 100%);
+    color: #fff;
+    border: none;
+    border-radius: 7px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(42,77,143,0.08);
+    transition: background 0.2s;
+    margin-top: 6px;
+}
+.auth-card button:hover {
+    background: linear-gradient(90deg, #3b7dd8 60%, #2a4d8f 100%);
+}
+.auth-link {
+    margin-top: 18px;
+    font-size: 1rem;
+    color: #2a4d8f;
+    text-align: center;
+}
+.auth-link a {
+    color: #3b7dd8;
+    text-decoration: underline;
+}
+.error {
+    color: #d32f2f;
+    background: #ffeaea;
+    padding: 8px 12px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    font-size: 0.98rem;
+    width: 100%;
+    text-align: center;
+}
+@media (max-width: 600px) {
+    .auth-card {
+        padding: 18px 6px 14px 6px;
+        max-width: 98vw;
+    }
+    .auth-logo {
+        height: 38px;
+    }
+}
+.auth-logo-top {
+    display: block;
+    margin: 0 auto 12px auto;
+    height: 44px;
+    width: 44px;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 2px 8px rgba(42,77,143,0.10);
+    background: #fff;
+    padding: 3px;
+    border: 2px solid #e3eaf6;
+}
+</style>
+</body>
+</html> 

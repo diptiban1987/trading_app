@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Legal - KishanXSignals</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        .legal-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .legal-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .legal-section {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .legal-section h2 {
+            color: #2a4d8f;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+
+        .legal-section h3 {
+            color: #1e293b;
+            margin: 20px 0 10px;
+            font-size: 1.2rem;
+        }
+
+        .legal-section p {
+            color: #475569;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .legal-section ul {
+            list-style-type: disc;
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+
+        .legal-section li {
+            color: #475569;
+            margin-bottom: 8px;
+            line-height: 1.6;
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            padding: 16px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .logo {
+            height: 40px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 24px;
+            margin: 0 24px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .nav-link {
+            color: #1e293b;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 12px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+        }
+
+        .nav-link:hover {
+            background: #2a4d8f;
+            color: white;
+            border-color: #2a4d8f;
+        }
+
+        .nav-link.active {
+            background: #2a4d8f;
+            color: white;
+            border-color: #2a4d8f;
+        }
+
+        .logout-btn {
+            background: #ef4444;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .logout-btn:hover {
+            background: #dc2626;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-header {
+                flex-direction: column;
+                gap: 16px;
+            }
+
+            .nav-menu {
+                margin: 16px 0;
+            }
+
+            .user-info {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="legal-container">
+        <header class="dashboard-header">
+            <div class="logo-container">
+                <img src="{{ url_for('static', filename='logo3.png') }}" alt="Kishan X Logo" class="logo">
+                <h1>Legal Information</h1>
+            </div>
+            <nav class="nav-menu">
+                <a href="/" class="nav-link">Home</a>
+                <a href="/dashboard" class="nav-link">Dashboard</a>
+                <a href="/indian" class="nav-link">Indian Market</a>
+                <a href="/otc" class="nav-link">OTC Market</a>
+                <a href="/market_dashboard" class="nav-link">Market Overview</a>
+                <a href="/profile" class="nav-link">Profile</a>
+            </nav>
+            <div class="user-info">
+                <span>Welcome, {{ user.username }}</span>
+                <a href="/logout" class="logout-btn">Logout</a>
+            </div>
+        </header>
+
+        <div class="legal-section">
+            <h2>Terms and Conditions</h2>
+            <p>Welcome to KishanXSignals. By accessing and using this website, you agree to be bound by these Terms and Conditions.</p>
+            
+            <h3>1. Use of Service</h3>
+            <p>Our service provides market analysis and trading signals. You acknowledge that:</p>
+            <ul>
+                <li>All trading decisions are your own responsibility</li>
+                <li>Past performance is not indicative of future results</li>
+                <li>You should never invest more than you can afford to lose</li>
+            </ul>
+
+            <h3>2. Account Responsibilities</h3>
+            <p>You are responsible for:</p>
+            <ul>
+                <li>Maintaining the confidentiality of your account</li>
+                <li>All activities that occur under your account</li>
+                <li>Notifying us immediately of any unauthorized use</li>
+            </ul>
+        </div>
+
+        <div class="legal-section">
+            <h2>Privacy Policy</h2>
+            <p>We are committed to protecting your privacy and handling your data with transparency and care.</p>
+            
+            <h3>1. Information We Collect</h3>
+            <ul>
+                <li>Account information (username, email)</li>
+                <li>Usage data and preferences</li>
+                <li>Market interaction data</li>
+            </ul>
+
+            <h3>2. How We Use Your Information</h3>
+            <ul>
+                <li>To provide and improve our services</li>
+                <li>To communicate with you about your account</li>
+                <li>To analyze and enhance user experience</li>
+            </ul>
+        </div>
+
+        <div class="legal-section">
+            <h2>Disclaimer</h2>
+            <p>Important information about the use of our services:</p>
+            
+            <h3>1. No Financial Advice</h3>
+            <p>The information provided on this platform is for educational and informational purposes only. We do not provide financial advice.</p>
+
+            <h3>2. Risk Warning</h3>
+            <p>Trading in financial markets carries a high level of risk and may not be suitable for all investors. The high degree of leverage can work against you as well as for you.</p>
+
+            <h3>3. Data Accuracy</h3>
+            <p>While we strive to provide accurate market data, we cannot guarantee the accuracy, completeness, or reliability of any information provided.</p>
+        </div>
+    </div>
+</body>
+</html> 

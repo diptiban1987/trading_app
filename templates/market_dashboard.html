@@ -1,0 +1,694 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid px-3 py-3">
+    <div class="row g-3">
+        <!-- Market Overview -->
+        <div class="col-md-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white py-3">
+                    <h5 class="card-title mb-0 text-primary">Market Overview</h5>
+                </div>
+                <div class="card-body p-3">
+                    <div class="row g-3" id="market-cards">
+                        <!-- Always show these four major forex pairs in a single row -->
+                        <div class="row g-3 mb-3">
+                            {% for symbol in ['AUDUSD', 'EURUSD', 'GBPUSD', 'USDJPY'] %}
+                            <div class="col-lg-3 col-md-6 col-sm-12 d-flex align-items-stretch">
+                                <div class="card market-card w-100" id="card-{{ symbol }}">
+                                    <div class="market-card-header d-flex align-items-center justify-content-between px-3 py-2">
+                                        <div class="d-flex align-items-center gap-2">
+                                            <span class="market-symbol-icon"><i class="fas fa-chart-line"></i></span>
+                                            <span class="market-symbol">{{ symbol }}</span>
+                                        </div>
+                                        <span class="badge market-badge" id="change-{{ symbol }}">Loading...</span>
+                                    </div>
+                                    <div class="market-card-price-area text-center py-2 px-3">
+                                        <div class="market-price-label">Current Price</div>
+                                        <div class="market-price" id="price-{{ symbol }}" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Loading...</div>
+                                    </div>
+                                    <div class="market-metrics-group px-3 pb-3 pt-2">
+                                        <div class="market-metrics-grid">
+                                            <div class="metric-item">
+                                                <span class="metric-icon text-success"><i class="fas fa-arrow-up"></i></span>
+                                                <div>
+                                                    <div class="metric-label">24h High</div>
+                                                    <div class="metric-value" id="high-{{ symbol }}">Loading...</div>
+                                                </div>
+                                            </div>
+                                            <div class="metric-item">
+                                                <span class="metric-icon text-danger"><i class="fas fa-arrow-down"></i></span>
+                                                <div>
+                                                    <div class="metric-label">24h Low</div>
+                                                    <div class="metric-value" id="low-{{ symbol }}">Loading...</div>
+                                                </div>
+                                            </div>
+                                            <div class="metric-item">
+                                                <span class="metric-icon text-primary"><i class="fas fa-hand-holding-usd"></i></span>
+                                                <div>
+                                                    <div class="metric-label">Bid</div>
+                                                    <div class="metric-value" id="bid-{{ symbol }}">Loading...</div>
+                                                </div>
+                                            </div>
+                                            <div class="metric-item">
+                                                <span class="metric-icon text-warning"><i class="fas fa-money-bill-wave"></i></span>
+                                                <div>
+                                                    <div class="metric-label">Ask</div>
+                                                    <div class="metric-value" id="ask-{{ symbol }}">Loading...</div>
+                                                </div>
+                                            </div>
+                                            <div class="metric-item">
+                                                <span class="metric-icon text-info"><i class="fas fa-sliders-h"></i></span>
+                                                <div>
+                                                    <div class="metric-label">Spread</div>
+                                                    <div class="metric-value" id="spread-pips-{{ symbol }}">Loading...</div>
+                                                </div>
+                                            </div>
+                                            <div class="metric-item">
+                                                <span class="metric-icon text-secondary"><i class="fas fa-bolt"></i></span>
+                                                <div>
+                                                    <div class="metric-label">Volatility</div>
+                                                    <div class="metric-value" id="volatility-{{ symbol }}">Loading...</div>
+                                                </div>
+                                            </div>
+                                            <div class="metric-item">
+                                                <span class="metric-icon text-purple"><i class="fas fa-chart-area"></i></span>
+                                                <div>
+                                                    <div class="metric-label">RSI</div>
+                                                    <div class="metric-value" id="rsi-{{ symbol }}">Loading...</div>
+                                                </div>
+                                            </div>
+                                            <div class="metric-item">
+                                                <span class="metric-icon text-dark"><i class="fas fa-wave-square"></i></span>
+                                                <div>
+                                                    <div class="metric-label">MACD</div>
+                                                    <div class="metric-value" id="macd-{{ symbol }}">Loading...</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <!-- Render the rest of the subscribed symbols as before, skipping the four majors -->
+                        {% for symbol in subscribed_symbols %}
+                            {% if symbol.symbol not in ['AUDUSD', 'EURUSD', 'GBPUSD', 'USDJPY'] %}
+                            {% set is_otc = 'OTC' in symbol.symbol %}
+                            <div class="col-lg-3 col-md-4 col-sm-6 mb-3 d-flex align-items-stretch {% if is_otc %}otc-card{% endif %}" {% if is_otc %}data-otc="true"{% endif %}>
+                                <div class="card market-card w-100" id="card-{{ symbol.symbol }}">
+                                    <div class="market-card-header d-flex align-items-center justify-content-between px-3 py-2">
+                                        <div class="d-flex align-items-center gap-2">
+                                            <span class="market-symbol-icon"><i class="fas fa-chart-line"></i></span>
+                                            <span class="market-symbol">{{ symbol.symbol }}</span>
+                                        </div>
+                                        <span class="badge market-badge" id="change-{{ symbol.symbol }}">Loading...</span>
+                                    </div>
+                                    <div class="market-card-price-area text-center py-2 px-3">
+                                        <div class="market-price-label">Current Price</div>
+                                        <div class="market-price" id="price-{{ symbol.symbol }}" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Loading...</div>
+                                    </div>
+                                    <div class="market-metrics-group px-3 pb-3 pt-2">
+                                        <div class="market-metrics-grid">
+                                            <div class="metric-item">
+                                                <span class="metric-icon text-success"><i class="fas fa-arrow-up"></i></span>
+                                                <div>
+                                                    <div class="metric-label">24h High</div>
+                                                    <div class="metric-value" id="high-{{ symbol.symbol }}">Loading...</div>
+                                                </div>
+                                            </div>
+                                            <div class="metric-item">
+                                                <span class="metric-icon text-danger"><i class="fas fa-arrow-down"></i></span>
+                                                <div>
+                                                    <div class="metric-label">24h Low</div>
+                                                    <div class="metric-value" id="low-{{ symbol.symbol }}">Loading...</div>
+                                                </div>
+                                            </div>
+                                            <div class="metric-item">
+                                                <span class="metric-icon text-primary"><i class="fas fa-hand-holding-usd"></i></span>
+                                                <div>
+                                                    <div class="metric-label">Bid</div>
+                                                    <div class="metric-value" id="bid-{{ symbol.symbol }}">Loading...</div>
+                                                </div>
+                                            </div>
+                                            <div class="metric-item">
+                                                <span class="metric-icon text-warning"><i class="fas fa-money-bill-wave"></i></span>
+                                                <div>
+                                                    <div class="metric-label">Ask</div>
+                                                    <div class="metric-value" id="ask-{{ symbol.symbol }}">Loading...</div>
+                                                </div>
+                                            </div>
+                                            <div class="metric-item">
+                                                <span class="metric-icon text-info"><i class="fas fa-sliders-h"></i></span>
+                                                <div>
+                                                    <div class="metric-label">Spread</div>
+                                                    <div class="metric-value" id="spread-pips-{{ symbol.symbol }}">Loading...</div>
+                                                </div>
+                                            </div>
+                                            <div class="metric-item">
+                                                <span class="metric-icon text-secondary"><i class="fas fa-bolt"></i></span>
+                                                <div>
+                                                    <div class="metric-label">Volatility</div>
+                                                    <div class="metric-value" id="volatility-{{ symbol.symbol }}">Loading...</div>
+                                                </div>
+                                            </div>
+                                            <div class="metric-item">
+                                                <span class="metric-icon text-purple"><i class="fas fa-chart-area"></i></span>
+                                                <div>
+                                                    <div class="metric-label">RSI</div>
+                                                    <div class="metric-value" id="rsi-{{ symbol.symbol }}">Loading...</div>
+                                                </div>
+                                            </div>
+                                            <div class="metric-item">
+                                                <span class="metric-icon text-dark"><i class="fas fa-wave-square"></i></span>
+                                                <div>
+                                                    <div class="metric-label">MACD</div>
+                                                    <div class="metric-value" id="macd-{{ symbol.symbol }}">Loading...</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Trading Interface and Charts -->
+        <div class="col-md-8">
+            <div class="card shadow-sm mb-3">
+                <div class="card-header bg-white py-3">
+                    <h5 class="card-title mb-0 text-primary">Trading Interface</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="symbol" class="form-label">Symbol</label>
+                                <select class="form-select" id="symbol">
+                                    {% for symbol in subscribed_symbols %}
+                                    <option value="{{ symbol.symbol }}">{{ symbol.symbol }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="quantity" class="form-label">Quantity</label>
+                                <input type="number" class="form-control" id="quantity" min="1" value="1">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row g-3 mt-2">
+                        <div class="col-md-6">
+                            <button class="btn btn-success w-100 py-2" onclick="executeTrade('buy')">
+                                <i class="fas fa-arrow-up me-2"></i>Buy
+                            </button>
+                        </div>
+                        <div class="col-md-6">
+                            <button class="btn btn-danger w-100 py-2" onclick="executeTrade('sell')">
+                                <i class="fas fa-arrow-down me-2"></i>Sell
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts -->
+            <div class="card shadow-sm">
+                <div class="card-header bg-white py-3">
+                    <h5 class="card-title mb-0 text-primary">Price Charts</h5>
+                </div>
+                <div class="card-body">
+                    {% for symbol in subscribed_symbols %}
+                    <div class="chart-wrapper mb-4">
+                        <div id="chart-{{ symbol.symbol }}" class="chart-container"></div>
+                        <div class="chart-indicators mt-2">
+                            <div class="row g-2">
+                                <div class="col-md-4">
+                                    <div class="indicator-card">
+                                        <small class="text-muted d-block">RSI</small>
+                                        <span id="chart-rsi-{{ symbol.symbol }}">Loading...</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="indicator-card">
+                                        <small class="text-muted d-block">MACD</small>
+                                        <span id="chart-macd-{{ symbol.symbol }}">Loading...</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="indicator-card">
+                                        <small class="text-muted d-block">Volatility</small>
+                                        <span id="chart-volatility-{{ symbol.symbol }}">Loading...</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Trading Signals -->
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white py-3">
+                    <h5 class="card-title mb-0 text-primary">Trading Signals</h5>
+                </div>
+                <div class="card-body">
+                    <div id="signals-container">
+                        {% for symbol, signal in signals.items() %}
+                        <div class="signal-card mb-3" data-symbol="{{ symbol }}">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h6 class="mb-0">{{ symbol }}</h6>
+                                <span class="badge bg-primary">{{ signal.type }}</span>
+                            </div>
+                            <div class="signal-info mt-2">
+                                <div class="d-flex justify-content-between">
+                                    <span class="text-muted">Confidence:</span>
+                                    <span class="signal-confidence">{{ signal.confidence }}%</span>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <span class="text-muted">Time:</span>
+                                    <span class="signal-time">{{ signal.timestamp }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript for real-time updates -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+<script src="https://cdn.plot.ly/plotly-2.27.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/js/all.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const socket = io();
+        let updateTimeout;
+        
+        socket.on('connect', function() {
+            console.log('Connected to WebSocket server');
+            const symbols = document.querySelectorAll('[id^="card-"]');
+            symbols.forEach(function(card) {
+                const symbol = card.id.replace('card-', '');
+                socket.emit('subscribe', { symbol: symbol });
+            });
+        });
+        
+        socket.on('price_update', function(data) {
+            console.log('Received price update:', data);
+            clearTimeout(updateTimeout);
+            updateTimeout = setTimeout(() => updateMarketCard(data), 100);
+        });
+        
+        function updateMarketCard(data) {
+            const symbol = data.symbol;
+            const priceElement = document.getElementById(`price-${symbol}`);
+            const changeElement = document.getElementById(`change-${symbol}`);
+            const highElement = document.getElementById(`high-${symbol}`);
+            const lowElement = document.getElementById(`low-${symbol}`);
+            const bidElement = document.getElementById(`bid-${symbol}`);
+            const askElement = document.getElementById(`ask-${symbol}`);
+            const spreadPipsElement = document.getElementById(`spread-pips-${symbol}`);
+            const volatilityElement = document.getElementById(`volatility-${symbol}`);
+            const rsiElement = document.getElementById(`rsi-${symbol}`);
+            const macdElement = document.getElementById(`macd-${symbol}`);
+            
+            if (priceElement) priceElement.textContent = data.price.toFixed(5);
+            if (changeElement) {
+                changeElement.textContent = `${data.change.toFixed(2)}%`;
+                changeElement.className = `badge ${data.change >= 0 ? 'bg-success' : 'bg-danger'}`;
+            }
+            if (highElement) highElement.textContent = data.high_24h.toFixed(5);
+            if (lowElement) lowElement.textContent = data.low_24h.toFixed(5);
+            if (bidElement) bidElement.textContent = data.bid.toFixed(5);
+            if (askElement) askElement.textContent = data.ask.toFixed(5);
+            if (spreadPipsElement) spreadPipsElement.textContent = data.spread_pips.toFixed(1);
+            if (volatilityElement) volatilityElement.textContent = `${data.volatility.toFixed(2)}%`;
+            if (rsiElement) rsiElement.textContent = data.rsi.toFixed(2);
+            if (macdElement) macdElement.textContent = data.macd.toFixed(2);
+            
+            // Update chart indicators
+            const chartRsiElement = document.getElementById(`chart-rsi-${symbol}`);
+            const chartMacdElement = document.getElementById(`chart-macd-${symbol}`);
+            const chartVolatilityElement = document.getElementById(`chart-volatility-${symbol}`);
+            
+            if (chartRsiElement) chartRsiElement.textContent = data.rsi.toFixed(2);
+            if (chartMacdElement) chartMacdElement.textContent = data.macd.toFixed(2);
+            if (chartVolatilityElement) chartVolatilityElement.textContent = `${data.volatility.toFixed(2)}%`;
+            
+            updateChart(symbol, data.timestamps, data.prices);
+        }
+        
+        function updateChart(symbol, timestamps, prices) {
+            const chartId = `chart-${symbol}`;
+            const chartElement = document.getElementById(chartId);
+            if (!chartElement) return;
+            
+            const trace = {
+                x: timestamps,
+                y: prices,
+                type: 'scatter',
+                mode: 'lines',
+                name: symbol,
+                line: {
+                    color: '#007bff',
+                    width: 2
+                }
+            };
+            
+            const layout = {
+                title: {
+                    text: `${symbol} Price Chart`,
+                    font: {
+                        size: 16,
+                        color: '#2c3e50'
+                    }
+                },
+                xaxis: {
+                    title: 'Time',
+                    showgrid: false,
+                    rangeslider: { visible: false }
+                },
+                yaxis: {
+                    title: 'Price',
+                    showgrid: true,
+                    tickformat: '.5f'
+                },
+                margin: {
+                    l: 50,
+                    r: 20,
+                    t: 50,
+                    b: 50
+                },
+                height: 300,
+                paper_bgcolor: 'rgba(0,0,0,0)',
+                plot_bgcolor: 'rgba(0,0,0,0)'
+            };
+            
+            Plotly.newPlot(chartId, [trace], layout, {
+                responsive: true,
+                displayModeBar: false
+            });
+        }
+
+        const toggle = document.getElementById('toggleOtc');
+        if (toggle) {
+            toggle.addEventListener('change', function() {
+                document.querySelectorAll('.otc-card').forEach(card => {
+                    card.style.display = toggle.checked ? '' : 'none';
+                });
+            });
+        }
+    });
+
+    function executeTrade(type) {
+        const symbol = document.getElementById('symbol').value;
+        const quantity = document.getElementById('quantity').value;
+
+        fetch('/api/trade', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                symbol: symbol,
+                trade_type: type,
+                quantity: parseInt(quantity)
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Trade executed successfully!');
+            } else {
+                alert(`Trade failed: ${data.message}`);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred while executing the trade.');
+        });
+    }
+</script>
+
+<style>
+:root {
+    --primary-color: #007bff;
+    --success-color: #28a745;
+    --danger-color: #dc3545;
+    --text-color: #2c3e50;
+    --border-color: #e0e0e0;
+    --card-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+body {
+    background-color: #f8f9fa;
+    color: var(--text-color);
+}
+
+.card {
+    border: none;
+    border-radius: 10px;
+    box-shadow: var(--card-shadow);
+}
+
+.card-header {
+    border-bottom: 1px solid var(--border-color);
+}
+
+.market-card {
+    background: #fff;
+    border: 1.5px solid var(--border-color);
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    min-width: 260px;
+    max-width: 340px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    height: 100%;
+    transition: box-shadow 0.2s, transform 0.2s;
+}
+
+.market-card:hover {
+    box-shadow: 0 8px 24px rgba(0,123,255,0.10);
+    border-color: var(--primary-color);
+    transform: translateY(-4px) scale(1.02);
+}
+
+.market-card-header {
+    background: linear-gradient(90deg, #e9f0fb 60%, #f8faff 100%);
+    border-bottom: 1px solid #e3eaf5;
+    border-radius: 16px 16px 0 0;
+    font-weight: 600;
+    font-size: 1.08rem;
+    min-height: 44px;
+}
+
+.market-symbol {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+}
+
+.market-symbol-icon {
+    font-size: 1.1rem;
+    color: var(--primary-color);
+    margin-right: 0.3rem;
+}
+
+.market-badge {
+    font-size: 0.95rem;
+    border-radius: 12px;
+    padding: 0.25em 0.7em;
+    font-weight: 600;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+    margin-left: 0.5rem;
+}
+
+.market-card-price-area {
+    background: #f8faff;
+    border-radius: 10px;
+    margin: 0.7rem 0.7rem 1rem 0.7rem;
+    box-shadow: 0 1px 4px rgba(0,123,255,0.03);
+    border: 1px solid #e3eaf5;
+    min-height: 56px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.market-price-label {
+    font-size: 0.92rem;
+    color: #7b8ca6;
+    margin-bottom: 0.1rem;
+}
+
+.market-price {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--primary-color);
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.market-metrics-group {
+    background: #f4f7fb;
+    border-radius: 10px;
+    padding: 0.7rem 0.5rem 0.5rem 0.5rem;
+    margin: 0 0.7rem 0.7rem 0.7rem;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.02);
+}
+
+.market-metrics-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.4rem 0.7rem;
+}
+
+.metric-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: #fff;
+    border-radius: 7px;
+    padding: 0.3rem 0.5rem;
+    min-width: 0;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+}
+
+.metric-icon {
+    font-size: 1rem;
+    opacity: 0.85;
+    min-width: 18px;
+    text-align: center;
+}
+
+.metric-label {
+    font-size: 0.8rem;
+    color: #7b8ca6;
+    font-weight: 500;
+    line-height: 1.1;
+}
+
+.metric-value {
+    font-size: 0.98rem;
+    font-weight: 600;
+    color: var(--text-color);
+    line-height: 1.1;
+}
+
+.text-purple { color: #8e44ad; }
+
+.signal-card {
+    padding: 1rem;
+    background: #fff;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.signal-card:hover {
+    background-color: #f8f9fa;
+    transform: translateY(-2px);
+    box-shadow: var(--card-shadow);
+}
+
+.chart-wrapper {
+    background: #fff;
+    border-radius: 8px;
+    padding: 1rem;
+    border: 1px solid var(--border-color);
+}
+
+.chart-container {
+    height: 300px;
+    margin-bottom: 1rem;
+}
+
+.chart-indicators {
+    padding: 0.5rem;
+    background: #f8f9fa;
+    border-radius: 6px;
+}
+
+.indicator-card {
+    padding: 0.5rem;
+    background: #fff;
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+}
+
+.indicator-card small {
+    font-size: 0.75rem;
+}
+
+.indicator-card span {
+    font-weight: 500;
+    color: var(--text-color);
+}
+
+.form-control, .form-select {
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+    padding: 0.5rem 0.75rem;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(0,123,255,0.25);
+}
+
+.btn {
+    border-radius: 6px;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+}
+
+.btn-success {
+    background-color: var(--success-color);
+    border-color: var(--success-color);
+}
+
+.btn-danger {
+    background-color: var(--danger-color);
+    border-color: var(--danger-color);
+}
+
+#market-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+}
+
+@media (max-width: 1200px) {
+    .market-card { min-width: 220px; max-width: 100%; }
+}
+@media (max-width: 992px) {
+    .market-card { min-width: 180px; }
+    .market-metrics-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 768px) {
+    #market-cards { grid-template-columns: 1fr; }
+    .market-card { min-width: 0; }
+    .container-fluid { padding: 0.5rem; }
+}
+</style>
+{% endblock %} 

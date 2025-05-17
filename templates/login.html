@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Login - KishanXSignals</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body.auth-bg {
+            min-height: 100vh;
+            /* background: url({{ url_for('static', filename='trade-bg.jpg') }}) no-repeat center center fixed; */
+            background-size: cover;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .auth-container {
+            flex: 1 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 80vh;
+        }
+
+        .auth-card {
+            background: rgba(255,255,255,0.92);
+            box-shadow: 0 8px 32px 0 rgba(31,38,135,0.15),
+                        0 2px 8px 0 rgba(0,0,0,0.1);
+            border-radius: 20px;
+            padding: 40px 36px 32px 36px;
+            max-width: 380px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255,255,255,0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .auth-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px 0 rgba(31,38,135,0.2),
+                        0 4px 12px 0 rgba(0,0,0,0.15);
+        }
+
+        .auth-logo {
+            height: 60px;
+            margin-bottom: 16px;
+            transition: transform 0.3s ease;
+        }
+
+        .auth-logo:hover {
+            transform: scale(1.05);
+        }
+
+        .auth-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #2a4d8f 0%, #3b7dd8 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 20px;
+            letter-spacing: 1.5px;
+            text-align: center;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: relative;
+            padding-bottom: 8px;
+            transition: transform 0.3s ease;
+        }
+
+        .auth-title:hover {
+            transform: scale(1.02);
+        }
+
+        .auth-title:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, #2a4d8f, #3b7dd8);
+            border-radius: 3px;
+            opacity: 0.8;
+        }
+
+        .auth-title span {
+            display: inline-block;
+            transition: transform 0.3s ease;
+        }
+
+        .auth-title:hover span {
+            transform: translateY(-2px);
+        }
+
+        .auth-card h2 {
+            margin-bottom: 24px;
+            color: #2a4d8f;
+            font-size: 1.5rem;
+            font-weight: 600;
+            position: relative;
+        }
+
+        .auth-card h2:after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 3px;
+            background: linear-gradient(90deg, #2a4d8f, #3b7dd8);
+            border-radius: 2px;
+        }
+
+        .auth-card input[type="text"], .auth-card input[type="password"] {
+            width: 100%;
+            padding: 12px 16px;
+            margin-bottom: 16px;
+            border: 1.5px solid #e0e7ff;
+            border-radius: 12px;
+            font-size: 1rem;
+            background: rgba(255,255,255,0.9);
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            box-sizing: border-box;
+        }
+
+        .auth-card input:focus {
+            border: 1.5px solid #2a4d8f;
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(42,77,143,0.1);
+            background: #ffffff;
+        }
+
+        .auth-card button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #2a4d8f 0%, #3b7dd8 100%);
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(42,77,143,0.15);
+            transition: all 0.3s ease;
+            margin-top: 8px;
+            letter-spacing: 0.5px;
+        }
+
+        .auth-card button:hover {
+            background: linear-gradient(135deg, #3b7dd8 0%, #2a4d8f 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(42,77,143,0.2);
+        }
+
+        .auth-card button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 8px rgba(42,77,143,0.15);
+        }
+
+        .auth-link {
+            margin-top: 24px;
+            font-size: 1rem;
+            color: #2a4d8f;
+            text-align: center;
+        }
+
+        .auth-link a {
+            color: #3b7dd8;
+            text-decoration: none;
+            font-weight: 600;
+            position: relative;
+            transition: color 0.3s ease;
+        }
+
+        .auth-link a:after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: #3b7dd8;
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .auth-link a:hover {
+            color: #2a4d8f;
+        }
+
+        .auth-link a:hover:after {
+            transform: scaleX(1);
+        }
+
+        .error {
+            color: #d32f2f;
+            background: rgba(211,47,47,0.1);
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            font-size: 0.95rem;
+            width: 100%;
+            text-align: center;
+            border: 1px solid rgba(211,47,47,0.2);
+            animation: shake 0.5s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .subscription-message {
+            margin-top: 24px;
+            padding: 16px;
+            background: linear-gradient(135deg, rgba(42,77,143,0.1) 0%, rgba(59,125,216,0.1) 100%);
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid rgba(42,77,143,0.2);
+        }
+
+        .subscription-message p {
+            color: #2a4d8f;
+            font-size: 0.95rem;
+            margin-bottom: 12px;
+        }
+
+        .upgrade-btn {
+            display: inline-block;
+            padding: 8px 20px;
+            background: linear-gradient(135deg, #2a4d8f 0%, #3b7dd8 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .upgrade-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(42,77,143,0.2);
+        }
+
+        @media (max-width: 600px) {
+            .auth-card {
+                padding: 24px 16px 20px 16px;
+                max-width: 92vw;
+                margin: 0 16px;
+            }
+            .auth-logo {
+                height: 45px;
+            }
+            .auth-title {
+                font-size: 1.2rem;
+            }
+            .auth-card h2 {
+                font-size: 1.3rem;
+            }
+        }
+    </style>
+</head>
+<body class="auth-bg">
+    <div class="auth-container">
+        <div class="auth-card">
+            <img src="{{ url_for('static', filename='logo3.png') }}" alt="Kishan X Logo" class="auth-logo">
+            <div class="auth-title"><span>Kishan</span> <span>X</span> <span>Signals</span></div>
+            <h2>Login</h2>
+            {% if error %}<p class="error">{{ error }}</p>{% endif %}
+            <form method="POST" action="{{ url_for('login') }}">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" placeholder="Username" required>
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="Password" required>
+                <button type="submit">Login</button>
+            </form>
+            <p class="auth-link">Don't have an account? <a href="{{ url_for('register') }}">Register</a></p>
+            <div class="subscription-message">
+                <p>✨ Unlock premium features and extend your trading journey!</p>
+                <a href="{{ url_for('subscription') }}" class="upgrade-btn">Upgrade Now</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

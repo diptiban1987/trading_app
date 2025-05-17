@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Demo Locked - KishanX</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body { background: #f4f8fb; min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+        .lock-card {
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 2px 16px rgba(42,77,143,0.10);
+            padding: 24px 20px;
+            max-width: 320px;
+            width: 100%;
+            text-align: center;
+        }
+        .lock-title { 
+            font-size: 1.3rem; 
+            font-weight: 700; 
+            color: #2a4d8f; 
+            margin-bottom: 12px; 
+        }
+        .lock-desc { 
+            color: #444; 
+            margin-bottom: 16px;
+            font-size: 0.95rem;
+            line-height: 1.4;
+        }
+        .lock-form input[type="password"] {
+            width: 100%;
+            padding: 8px 12px;
+            margin-bottom: 12px;
+            border: 1.5px solid #cfd8dc;
+            border-radius: 7px;
+            font-size: 0.95rem;
+            background: #f9fafb;
+            box-sizing: border-box;
+        }
+        .lock-form button {
+            width: 100%;
+            padding: 10px;
+            background: linear-gradient(90deg, #2a4d8f 60%, #3b7dd8 100%);
+            color: #fff;
+            border: none;
+            border-radius: 7px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(42,77,143,0.08);
+            transition: background 0.2s;
+        }
+        .lock-form button:hover { background: linear-gradient(90deg, #3b7dd8 60%, #2a4d8f 100%); }
+        .error { 
+            color: #d32f2f; 
+            background: #ffeaea; 
+            padding: 6px 10px; 
+            border-radius: 5px; 
+            margin-bottom: 10px; 
+            font-size: 0.9rem;
+        }
+        .demo-note {
+            margin-top: 12px;
+            color: #888;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="lock-card">
+        <div class="lock-title">Demo Expired</div>
+        <div class="lock-desc">This demo version is locked after 30 minutes.<br>Enter the unlock password to continue.</div>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="error">{{ message }}</div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+        <form method="POST" action="/unlock" class="lock-form">
+            <input type="password" name="password" placeholder="Unlock password" required autofocus>
+            <button type="submit">Unlock</button>
+        </form>
+        <div class="demo-note">Demo will relock after 30 minutes.</div>
+    </div>
+</body>
+</html> 

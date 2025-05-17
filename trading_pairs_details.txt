@@ -1,0 +1,757 @@
+TRADING PAIRS AND MARKET DETAILS
+================================
+
+1. MAJOR FOREX PAIRS (Primary Display)
+-------------------------------------
+- AUDUSD (Australian Dollar/US Dollar)
+  CCID: AUDUSD
+  Average Daily Volume: 150,000-200,000 contracts
+  Typical Spread: 0.5-1.0 pips
+  Trading Hours: 24/5
+
+- EURUSD (Euro/US Dollar)
+  CCID: EURUSD
+  Average Daily Volume: 500,000-600,000 contracts
+  Typical Spread: 0.2-0.5 pips
+  Trading Hours: 24/5
+
+- GBPUSD (British Pound/US Dollar)
+  CCID: GBPUSD
+  Average Daily Volume: 250,000-300,000 contracts
+  Typical Spread: 0.8-1.2 pips
+  Trading Hours: 24/5
+
+- USDJPY (US Dollar/Japanese Yen)
+  CCID: USDJPY
+  Average Daily Volume: 300,000-350,000 contracts
+  Typical Spread: 0.3-0.7 pips
+  Trading Hours: 24/5
+
+2. REGULAR FOREX PAIRS
+---------------------
+- EURAUD (Euro/Australian Dollar)
+  CCID: EURAUD
+  Average Daily Volume: 80,000-100,000 contracts
+  Typical Spread: 1.0-1.5 pips
+  Trading Hours: 24/5
+
+- USDCHF (US Dollar/Swiss Franc)
+  CCID: USDCHF
+  Average Daily Volume: 120,000-150,000 contracts
+  Typical Spread: 0.8-1.2 pips
+  Trading Hours: 24/5
+
+- USDBRL (US Dollar/Brazilian Real)
+  CCID: USDBRL
+  Average Daily Volume: 40,000-60,000 contracts
+  Typical Spread: 2.0-3.0 pips
+  Trading Hours: 24/5
+
+- AUDUSD (Australian Dollar/US Dollar)
+  CCID: AUDUSD
+  Average Daily Volume: 150,000-200,000 contracts
+  Typical Spread: 0.5-1.0 pips
+  Trading Hours: 24/5
+
+- GBPCAD (British Pound/Canadian Dollar)
+  CCID: GBPCAD
+  Average Daily Volume: 60,000-80,000 contracts
+  Typical Spread: 1.2-1.8 pips
+  Trading Hours: 24/5
+
+- EURCAD (Euro/Canadian Dollar)
+  CCID: EURCAD
+  Average Daily Volume: 70,000-90,000 contracts
+  Typical Spread: 1.0-1.5 pips
+  Trading Hours: 24/5
+
+- NZDUSD (New Zealand Dollar/US Dollar)
+  CCID: NZDUSD
+  Average Daily Volume: 100,000-130,000 contracts
+  Typical Spread: 0.7-1.2 pips
+  Trading Hours: 24/5
+
+- USDPKR (US Dollar/Pakistani Rupee)
+  CCID: USDPKR
+  Average Daily Volume: 20,000-30,000 contracts
+  Typical Spread: 3.0-4.0 pips
+  Trading Hours: 24/5
+
+- EURUSD (Euro/US Dollar)
+  CCID: EURUSD
+  Average Daily Volume: 500,000-600,000 contracts
+  Typical Spread: 0.2-0.5 pips
+  Trading Hours: 24/5
+
+- USDCAD (US Dollar/Canadian Dollar)
+  CCID: USDCAD
+  Average Daily Volume: 110,000-140,000 contracts
+  Typical Spread: 0.6-1.0 pips
+  Trading Hours: 24/5
+
+- AUDCHF (Australian Dollar/Swiss Franc)
+  CCID: AUDCHF
+  Average Daily Volume: 50,000-70,000 contracts
+  Typical Spread: 1.5-2.0 pips
+  Trading Hours: 24/5
+
+- GBPUSD (British Pound/US Dollar)
+  CCID: GBPUSD
+  Average Daily Volume: 250,000-300,000 contracts
+  Typical Spread: 0.8-1.2 pips
+  Trading Hours: 24/5
+
+- EURGBP (Euro/British Pound)
+  CCID: EURGBP
+  Average Daily Volume: 180,000-220,000 contracts
+  Typical Spread: 0.7-1.1 pips
+  Trading Hours: 24/5
+
+3. OTC (OVER-THE-COUNTER) PAIRS
+------------------------------
+# Major OTC Pairs
+- AUDCAD_OTC (Australian Dollar/Canadian Dollar OTC)
+  CCID: AUDCAD_OTC
+  Average Daily Volume: 40,000-60,000 contracts
+  Typical Spread: 1.3-1.8 pips
+  Trading Hours: 24/5
+
+- AUDCHF_OTC (Australian Dollar/Swiss Franc OTC)
+  CCID: AUDCHF_OTC
+  Average Daily Volume: 50,000-70,000 contracts
+  Typical Spread: 1.2-1.7 pips
+  Trading Hours: 24/5
+
+- AUDHKD_OTC (Australian Dollar/Hong Kong Dollar OTC)
+  CCID: AUDHKD_OTC
+  Average Daily Volume: 20,000-40,000 contracts
+  Typical Spread: 2.3-2.8 pips
+  Trading Hours: 24/5
+
+- AUDJPY_OTC (Australian Dollar/Japanese Yen OTC)
+  CCID: AUDJPY_OTC
+  Average Daily Volume: 80,000-100,000 contracts
+  Typical Spread: 1.0-1.5 pips
+  Trading Hours: 24/5
+
+- AUDMXN_OTC (Australian Dollar/Mexican Peso OTC)
+  CCID: AUDMXN_OTC
+  Average Daily Volume: 15,000-35,000 contracts
+  Typical Spread: 2.8-3.3 pips
+  Trading Hours: 24/5
+
+- AUDNZD_OTC (Australian Dollar/New Zealand Dollar OTC)
+  CCID: AUDNZD_OTC
+  Average Daily Volume: 30,000-50,000 contracts
+  Typical Spread: 1.5-2.0 pips
+  Trading Hours: 24/5
+
+- AUDSGD_OTC (Australian Dollar/Singapore Dollar OTC)
+  CCID: AUDSGD_OTC
+  Average Daily Volume: 25,000-45,000 contracts
+  Typical Spread: 2.2-2.7 pips
+  Trading Hours: 24/5
+
+- AUDUSD_OTC (Australian Dollar/US Dollar OTC)
+  CCID: AUDUSD_OTC
+  Average Daily Volume: 100,000-130,000 contracts
+  Typical Spread: 0.8-1.3 pips
+  Trading Hours: 24/5
+
+- AUDZAR_OTC (Australian Dollar/South African Rand OTC)
+  CCID: AUDZAR_OTC
+  Average Daily Volume: 10,000-30,000 contracts
+  Typical Spread: 3.3-3.8 pips
+  Trading Hours: 24/5
+
+- EURCAD_OTC (Euro/Canadian Dollar OTC)
+  CCID: EURCAD_OTC
+  Average Daily Volume: 70,000-90,000 contracts
+  Typical Spread: 1.0-1.5 pips
+  Trading Hours: 24/5
+
+- EURCHF_OTC (Euro/Swiss Franc OTC)
+  CCID: EURCHF_OTC
+  Average Daily Volume: 70,000-90,000 contracts
+  Typical Spread: 1.1-1.6 pips
+  Trading Hours: 24/5
+
+- EURGBP_OTC (Euro/British Pound OTC)
+  CCID: EURGBP_OTC
+  Average Daily Volume: 100,000-130,000 contracts
+  Typical Spread: 1.0-1.5 pips
+  Trading Hours: 24/5
+
+- EURHKD_OTC (Euro/Hong Kong Dollar OTC)
+  CCID: EURHKD_OTC
+  Average Daily Volume: 30,000-50,000 contracts
+  Typical Spread: 2.0-2.5 pips
+  Trading Hours: 24/5
+
+- EURJPY_OTC (Euro/Japanese Yen OTC)
+  CCID: EURJPY_OTC
+  Average Daily Volume: 120,000-150,000 contracts
+  Typical Spread: 0.8-1.3 pips
+  Trading Hours: 24/5
+
+- EURMXN_OTC (Euro/Mexican Peso OTC)
+  CCID: EURMXN_OTC
+  Average Daily Volume: 25,000-45,000 contracts
+  Typical Spread: 2.5-3.0 pips
+  Trading Hours: 24/5
+
+- EURNZD_OTC (Euro/New Zealand Dollar OTC)
+  CCID: EURNZD_OTC
+  Average Daily Volume: 50,000-70,000 contracts
+  Typical Spread: 1.4-1.9 pips
+  Trading Hours: 24/5
+
+- EURSGD_OTC (Euro/Singapore Dollar OTC)
+  CCID: EURSGD_OTC
+  Average Daily Volume: 35,000-55,000 contracts
+  Typical Spread: 1.9-2.4 pips
+  Trading Hours: 24/5
+
+- EURUSD_OTC (Euro/US Dollar OTC)
+  CCID: EURUSD_OTC
+  Average Daily Volume: 200,000-250,000 contracts
+  Typical Spread: 0.5-1.0 pips
+  Trading Hours: 24/5
+
+- EURZAR_OTC (Euro/South African Rand OTC)
+  CCID: EURZAR_OTC
+  Average Daily Volume: 20,000-40,000 contracts
+  Typical Spread: 3.0-3.5 pips
+  Trading Hours: 24/5
+
+- GBPCAD_OTC (British Pound/Canadian Dollar OTC)
+  CCID: GBPCAD_OTC
+  Average Daily Volume: 60,000-80,000 contracts
+  Typical Spread: 1.2-1.7 pips
+  Trading Hours: 24/5
+
+- GBPCHF_OTC (British Pound/Swiss Franc OTC)
+  CCID: GBPCHF_OTC
+  Average Daily Volume: 60,000-80,000 contracts
+  Typical Spread: 1.3-1.8 pips
+  Trading Hours: 24/5
+
+- GBPHKD_OTC (British Pound/Hong Kong Dollar OTC)
+  CCID: GBPHKD_OTC
+  Average Daily Volume: 25,000-45,000 contracts
+  Typical Spread: 2.2-2.7 pips
+  Trading Hours: 24/5
+
+- GBPJPY_OTC (British Pound/Japanese Yen OTC)
+  CCID: GBPJPY_OTC
+  Average Daily Volume: 90,000-120,000 contracts
+  Typical Spread: 1.2-1.7 pips
+  Trading Hours: 24/5
+
+- GBPMXN_OTC (British Pound/Mexican Peso OTC)
+  CCID: GBPMXN_OTC
+  Average Daily Volume: 20,000-40,000 contracts
+  Typical Spread: 2.7-3.2 pips
+  Trading Hours: 24/5
+
+- GBPNZD_OTC (British Pound/New Zealand Dollar OTC)
+  CCID: GBPNZD_OTC
+  Average Daily Volume: 40,000-60,000 contracts
+  Typical Spread: 1.6-2.1 pips
+  Trading Hours: 24/5
+
+- GBPSGD_OTC (British Pound/Singapore Dollar OTC)
+  CCID: GBPSGD_OTC
+  Average Daily Volume: 30,000-50,000 contracts
+  Typical Spread: 2.1-2.6 pips
+  Trading Hours: 24/5
+
+- GBPUSD_OTC (British Pound/US Dollar OTC)
+  CCID: GBPUSD_OTC
+  Average Daily Volume: 150,000-180,000 contracts
+  Typical Spread: 1.0-1.5 pips
+  Trading Hours: 24/5
+
+- GBPZAR_OTC (British Pound/South African Rand OTC)
+  CCID: GBPZAR_OTC
+  Average Daily Volume: 15,000-35,000 contracts
+  Typical Spread: 3.2-3.7 pips
+  Trading Hours: 24/5
+
+- NZDCHF_OTC (New Zealand Dollar/Swiss Franc OTC)
+  CCID: NZDCHF_OTC
+  Average Daily Volume: 25,000-45,000 contracts
+  Typical Spread: 2.2-2.7 pips
+  Trading Hours: 24/5
+
+- NZDUSD_OTC (New Zealand Dollar/US Dollar OTC)
+  CCID: NZDUSD_OTC
+  Average Daily Volume: 60,000-80,000 contracts
+  Typical Spread: 1.3-1.8 pips
+  Trading Hours: 24/5
+
+- USDCAD_OTC (US Dollar/Canadian Dollar OTC)
+  CCID: USDCAD_OTC
+  Average Daily Volume: 80,000-100,000 contracts
+  Typical Spread: 0.9-1.4 pips
+  Trading Hours: 24/5
+
+- USDCHF_OTC (US Dollar/Swiss Franc OTC)
+  CCID: USDCHF_OTC
+  Average Daily Volume: 90,000-110,000 contracts
+  Typical Spread: 1.0-1.5 pips
+  Trading Hours: 24/5
+
+- USDHKD_OTC (US Dollar/Hong Kong Dollar OTC)
+  CCID: USDHKD_OTC
+  Average Daily Volume: 40,000-60,000 contracts
+  Typical Spread: 1.8-2.3 pips
+  Trading Hours: 24/5
+
+- USDJPY_OTC (US Dollar/Japanese Yen OTC)
+  CCID: USDJPY_OTC
+  Average Daily Volume: 180,000-220,000 contracts
+  Typical Spread: 0.6-1.1 pips
+  Trading Hours: 24/5
+
+- USDMXN_OTC (US Dollar/Mexican Peso OTC)
+  CCID: USDMXN_OTC
+  Average Daily Volume: 35,000-55,000 contracts
+  Typical Spread: 2.3-2.8 pips
+  Trading Hours: 24/5
+
+- USDNZD_OTC (US Dollar/New Zealand Dollar OTC)
+  CCID: USDNZD_OTC
+  Average Daily Volume: 60,000-80,000 contracts
+  Typical Spread: 1.3-1.8 pips
+  Trading Hours: 24/5
+
+- USDSGD_OTC (US Dollar/Singapore Dollar OTC)
+  CCID: USDSGD_OTC
+  Average Daily Volume: 45,000-65,000 contracts
+  Typical Spread: 1.7-2.2 pips
+  Trading Hours: 24/5
+
+- USDZAR_OTC (US Dollar/South African Rand OTC)
+  CCID: USDZAR_OTC
+  Average Daily Volume: 30,000-50,000 contracts
+  Typical Spread: 2.8-3.3 pips
+  Trading Hours: 24/5
+
+# Additional Exotic OTC Pairs
+- USDARS_OTC (US Dollar/Argentine Peso OTC)
+  CCID: USDARS_OTC
+  Average Daily Volume: 35,000-55,000 contracts
+  Typical Spread: 2.5-3.5 pips
+  Trading Hours: 24/5
+
+- USDBRL_OTC (US Dollar/Brazilian Real OTC)
+  CCID: USDBRL_OTC
+  Average Daily Volume: 40,000-60,000 contracts
+  Typical Spread: 2.0-3.0 pips
+  Trading Hours: 24/5
+
+- USDPKR_OTC (US Dollar/Pakistani Rupee OTC)
+  CCID: USDPKR_OTC
+  Average Daily Volume: 20,000-30,000 contracts
+  Typical Spread: 3.0-4.0 pips
+  Trading Hours: 24/5
+
+4. INDIAN MARKET SYMBOLS
+-----------------------
+A. Major Indices:
+   - NIFTY50
+     CCID: NSEI
+     Average Daily Volume: 2.5-3.0 million contracts
+     Typical Spread: 0.05-0.10 points
+     Trading Hours: 9:15 AM - 3:30 PM IST
+
+   - BANKNIFTY
+     CCID: NSEBANK
+     Average Daily Volume: 1.8-2.2 million contracts
+     Typical Spread: 0.10-0.15 points
+     Trading Hours: 9:15 AM - 3:30 PM IST
+
+   - NSEBANK
+   - NSEIT
+   - NSEINFRA
+   - NSEPHARMA
+   - NSEFMCG
+   - NSEMETAL
+   - NSEENERGY
+   - NSEAUTO
+
+B. Additional Indices:
+   - NIFTYMIDCAP
+   - NIFTYSMALLCAP
+   - NIFTYNEXT50
+   - NIFTY100
+   - NIFTY500
+
+C. Sector Indices:
+   - NIFTYREALTY
+   - NIFTYPVTBANK
+   - NIFTYPSUBANK
+   - NIFTYFIN
+   - NIFTYMEDIA
+
+D. Popular Stocks:
+   - RELIANCE
+     CCID: RELIANCE.NS
+     Average Daily Volume: 8-10 million shares
+     Typical Spread: 0.05-0.10 rupees
+     Trading Hours: 9:15 AM - 3:30 PM IST
+
+   - TCS
+   - HDFCBANK
+   - INFY
+   - ICICIBANK
+   - HINDUNILVR
+   - SBIN
+   - BHARTIARTL
+   - KOTAKBANK
+   - BAJFINANCE
+
+5. BROKERS AND PAYOUTS
+---------------------
+A. International Brokers:
+   - Quotex: 85% payout
+   - Pocket Option: 80% payout
+   - Binolla: 78% payout
+   - IQ Option: 82% payout
+   - Bullex: 75% payout
+   - Exnova: 77% payout
+
+B. Indian Brokers:
+   - Zerodha
+   - Upstox
+   - Angel One
+   - Groww
+   - ICICI Direct
+   - HDFC Securities
+
+6. VOLUME-BASED SIGNAL GENERATION RULES
+-------------------------------------
+1. High Volume Thresholds:
+   - Major Pairs: > 200,000 contracts
+   - Regular Pairs: > 100,000 contracts
+   - OTC Pairs: > 150,000 contracts
+   - Indian Indices: > 2 million contracts
+   - Indian Stocks: > 5 million shares
+
+2. Volume Signal Rules:
+   - Strong Buy: Volume > 150% of average + price increase
+   - Strong Sell: Volume > 150% of average + price decrease
+   - Weak Buy: Volume > 120% of average + price increase
+   - Weak Sell: Volume > 120% of average + price decrease
+   - Neutral: Volume within normal range
+
+3. CCID Usage:
+   - Used for precise instrument identification
+   - Helps in cross-platform data synchronization
+   - Enables accurate historical data tracking
+   - Facilitates automated trading execution
+
+Note: All volumes and spreads are approximate and may vary based on market conditions and broker specifications.
+
+7. OTC MARKET SIGNAL GENERATION RULES
+-----------------------------------
+1. OTC Volume Analysis:
+   - High Volume Threshold: > 150,000 contracts
+   - Medium Volume Threshold: 100,000-150,000 contracts
+   - Low Volume Threshold: < 100,000 contracts
+   - Volume Surge: > 200% of 20-day average volume
+
+2. OTC Price Action Rules:
+   - Strong Trend: > 0.5% price movement with increasing volume
+   - Weak Trend: 0.2-0.5% price movement with stable volume
+   - Reversal Signal: > 1% price movement against previous trend
+   - Consolidation: < 0.2% price movement with decreasing volume
+
+3. OTC Spread Analysis:
+   - Tight Spread: < 1.0 pips (High probability signals)
+   - Normal Spread: 1.0-1.5 pips (Medium probability signals)
+   - Wide Spread: > 1.5 pips (Low probability signals)
+   - Spread Widening: > 50% increase in normal spread (Avoid trading)
+
+4. OTC Signal Accuracy Parameters:
+   A. Entry Signals:
+      - Strong Buy (90%+ accuracy):
+        * Volume > 200% of average
+        * Price increase > 0.5%
+        * Spread < 1.0 pips
+        * RSI < 30 (oversold)
+        * MACD showing bullish crossover
+        * Volume increasing for last 3 candles
+
+      - Strong Sell (90%+ accuracy):
+        * Volume > 200% of average
+        * Price decrease > 0.5%
+        * Spread < 1.0 pips
+        * RSI > 70 (overbought)
+        * MACD showing bearish crossover
+        * Volume increasing for last 3 candles
+
+      - Moderate Buy (75-90% accuracy):
+        * Volume > 150% of average
+        * Price increase > 0.3%
+        * Spread < 1.2 pips
+        * RSI < 40
+        * MACD showing potential bullish movement
+        * Volume stable or increasing
+
+      - Moderate Sell (75-90% accuracy):
+        * Volume > 150% of average
+        * Price decrease > 0.3%
+        * Spread < 1.2 pips
+        * RSI > 60
+        * MACD showing potential bearish movement
+        * Volume stable or increasing
+
+5. OTC Market Conditions:
+   A. Optimal Trading Conditions:
+      - Market Hours: 08:00-16:00 GMT (Highest liquidity)
+      - Volatility: 0.5-1.0% daily range
+      - Spread: < 1.2 pips
+      - Volume: > 150,000 contracts
+
+   B. Avoid Trading Conditions:
+      - High Volatility: > 2% daily range
+      - Wide Spread: > 1.5 pips
+      - Low Volume: < 100,000 contracts
+      - Major News Events: 30 minutes before and after
+      - Market Open/Close: First and last 30 minutes
+
+6. OTC Signal Confirmation:
+   A. Technical Indicators:
+      - RSI: 14-period
+      - MACD: 12,26,9
+      - Bollinger Bands: 20-period, 2 standard deviations
+      - Moving Averages: 20,50,200 EMA
+
+   B. Volume Indicators:
+      - Volume Moving Average: 20-period
+      - Volume Rate of Change: 14-period
+      - On-Balance Volume (OBV)
+      - Volume Weighted Average Price (VWAP)
+
+7. OTC Risk Management:
+   A. Position Sizing:
+      - High Accuracy Signal: 2-3% of account
+      - Moderate Accuracy Signal: 1-2% of account
+      - Low Accuracy Signal: 0.5-1% of account
+
+   B. Stop Loss Rules:
+      - Tight Stop: 0.3% for high accuracy signals
+      - Normal Stop: 0.5% for moderate accuracy signals
+      - Wide Stop: 0.8% for low accuracy signals
+
+   C. Take Profit Levels:
+      - High Accuracy: 1:2 risk-reward ratio
+      - Moderate Accuracy: 1:1.5 risk-reward ratio
+      - Low Accuracy: 1:1 risk-reward ratio
+
+8. OTC Signal Quality Metrics:
+   A. Signal Strength (0-100):
+      - Volume Contribution: 30 points
+      - Price Action: 25 points
+      - Technical Indicators: 25 points
+      - Market Conditions: 20 points
+
+   B. Signal Reliability:
+      - High Reliability: 80-100 points
+      - Medium Reliability: 60-79 points
+      - Low Reliability: < 60 points
+
+9. OTC Market Correlation Rules:
+   - Positive Correlation: > 0.7
+   - Negative Correlation: < -0.7
+   - No Correlation: -0.3 to 0.3
+   - Use correlation to confirm signals and manage risk
+
+10. OTC Signal Generation Algorithm:
+    A. Primary Factors (60% weight):
+       - Volume analysis
+       - Price action
+       - Technical indicators
+       - Spread analysis
+
+    B. Secondary Factors (40% weight):
+       - Market conditions
+       - Correlation analysis
+       - Time of day
+       - News impact
+
+Note: OTC signals require higher volume confirmation and tighter spread conditions for maximum accuracy. Always verify signals across multiple timeframes and indicators before execution.
+
+11. ADVANCED SIGNAL GENERATION PARAMETERS
+---------------------------------------
+1. Market Microstructure Analysis:
+   A. Order Flow Analysis:
+      - Large Order Detection: > 100,000 units
+      - Order Imbalance: > 60% buy/sell ratio
+      - Hidden Order Detection
+      - Iceberg Order Identification
+      - Order Flow Momentum
+
+   B. Liquidity Analysis:
+      - Market Depth: > 500,000 units within 0.5% of current price
+      - Liquidity Zones: Historical support/resistance levels
+      - Liquidity Imbalance: > 40% difference in buy/sell liquidity
+      - Liquidity Depletion: > 30% reduction in available liquidity
+
+2. Advanced Technical Parameters:
+   A. Multi-Timeframe Analysis:
+      - Primary: 15-minute chart
+      - Secondary: 1-hour chart
+      - Tertiary: 4-hour chart
+      - Daily: Trend confirmation
+      - Weekly: Major trend direction
+
+   B. Advanced Indicators:
+      - Ichimoku Cloud:
+        * Tenkan-sen (9-period)
+        * Kijun-sen (26-period)
+        * Senkou Span A/B
+        * Cloud thickness analysis
+      
+      - Fibonacci Levels:
+        * 0.236, 0.382, 0.500, 0.618, 0.786
+        * Golden ratio confluence
+        * Multiple timeframe Fibonacci alignment
+
+      - Elliott Wave Analysis:
+        * Wave pattern identification
+        * Wave completion probability
+        * Wave extension targets
+
+3. Market Sentiment Analysis:
+   A. News Impact:
+      - Economic Calendar Events
+      - Central Bank Announcements
+      - Major Economic Data Releases
+      - Geopolitical Events
+      - Market Surprises Index
+
+   B. Social Sentiment:
+      - Twitter Sentiment Analysis
+      - News Headline Analysis
+      - Market Fear/Greed Index
+      - Retail vs. Institutional Positioning
+
+4. Advanced Volume Analysis:
+   A. Volume Profile:
+      - Point of Control (POC)
+      - Volume Delta
+      - Volume by Price
+      - Volume Imbalance
+
+   B. Volume Patterns:
+      - Volume Divergence
+      - Volume Breakout
+      - Volume Exhaustion
+      - Volume Accumulation/Distribution
+
+5. Price Action Patterns:
+   A. Candlestick Patterns:
+      - Engulfing Patterns
+      - Doji Patterns
+      - Hammer/Shooting Star
+      - Three White Soldiers/Black Crows
+      - Morning/Evening Star
+
+   B. Chart Patterns:
+      - Head and Shoulders
+      - Double/Triple Tops/Bottoms
+      - Flags and Pennants
+      - Wedges and Triangles
+      - Cup and Handle
+
+6. Advanced OTC Specific Parameters:
+   A. OTC Market Depth:
+      - Bid-Ask Spread Analysis
+      - Market Maker Behavior
+      - OTC Liquidity Providers
+      - OTC Market Impact
+
+   B. OTC Price Discovery:
+      - Price Formation Process
+      - OTC Market Efficiency
+      - Price Transparency
+      - OTC Market Structure
+
+7. High-Probability Signal Combinations:
+   A. Strong Buy Signal (90%+ accuracy):
+      - Volume > 200% of average
+      - Price above 200 EMA
+      - RSI < 30 (oversold)
+      - MACD bullish crossover
+      - Fibonacci support level
+      - Positive order flow
+      - Low spread (< 1.0 pips)
+      - Multiple timeframe alignment
+      - Positive market sentiment
+      - No major news events
+
+   B. Strong Sell Signal (90%+ accuracy):
+      - Volume > 200% of average
+      - Price below 200 EMA
+      - RSI > 70 (overbought)
+      - MACD bearish crossover
+      - Fibonacci resistance level
+      - Negative order flow
+      - Low spread (< 1.0 pips)
+      - Multiple timeframe alignment
+      - Negative market sentiment
+      - No major news events
+
+8. Signal Confirmation Matrix:
+   A. Primary Confirmation (Required):
+      - Volume confirmation
+      - Price action
+      - Technical indicators
+      - Market structure
+
+   B. Secondary Confirmation (2 of 3 required):
+      - Order flow
+      - Market sentiment
+      - News impact
+
+   C. Tertiary Confirmation (1 of 2 required):
+      - Social sentiment
+      - Market correlation
+
+9. Advanced Risk Management:
+   A. Dynamic Position Sizing:
+      - Base size: 1% of account
+      - Signal strength multiplier: 0.5x to 3x
+      - Market condition multiplier: 0.5x to 2x
+      - Volatility adjustment: 0.5x to 1.5x
+
+   B. Advanced Stop Loss:
+      - ATR-based stops
+      - Support/Resistance based stops
+      - Volatility-based stops
+      - Time-based stops
+
+   C. Take Profit Levels:
+      - Multiple targets based on risk-reward
+      - Partial profit taking
+      - Trailing stops
+      - Break-even adjustments
+
+10. Signal Quality Enhancement:
+    A. Machine Learning Integration:
+       - Historical pattern recognition
+       - Success rate prediction
+       - Risk assessment
+       - Market condition classification
+
+    B. Real-time Adaptation:
+       - Market condition adjustment
+       - Volatility adjustment
+       - Liquidity adjustment
+       - News impact adjustment
+
+Note: These advanced parameters should be used in combination with the existing rules. The highest accuracy signals (90%+) require multiple confirmations across different parameter categories. Regular backtesting and parameter optimization are essential for maintaining signal accuracy.
+

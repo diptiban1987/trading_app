@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Signals</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body class="page-flex">
+<header class="main-header">
+    <div class="header-content">
+        <div class="header-left">
+            <img src="{{ url_for('static', filename='logo.png') }}" alt="KishanX Logo" class="logo">
+            <span class="company-name">Kishan X Trading Signals</span>
+        </div>
+        <nav class="nav-links">
+            <a href="/" {% if request.path == '/' %}class="active"{% endif %}>Forex</a>
+            <a href="/otc" {% if request.path == '/otc' %}class="active"{% endif %}>OTC</a>
+            <a href="/indian" {% if request.path == '/indian' %}class="active"{% endif %}>Indian</a>
+            <a href="/dashboard">Dashboard</a>
+            <a href="/logout">Logout</a>
+        </nav>
+    </div>
+</header>
+<div class="main-content">
+    <div class="action-links" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;gap:12px;">
+        <a href="/download" class="download-link">⬇️ Download PDF</a>
+        <a href="/" class="back-link">← Back</a>
+    </div>
+    {% if current_rate and selected_pair %}
+    <div class="rate-box" id="rateBox">
+        <div class="rate-title highlight-title" id="rateTitle">
+            <span class="rate-label">Current Rate for</span> <span id="pairName">{{ selected_pair }}</span>
+            <span id="brokerName" class="broker-label">({{ selected_broker }})</span>
+        </div>
+        <div class="callput-row">
+            <div class="call-box">
+                <span class="call-label">CALL</span>
+                <div class="option-section">
+                    <div class="option-heading">Black-Scholes Option Price</div>
+                    <span class="call-value big-value" id="callValue">{{ call_price if call_price is not none else current_rate }}</span>
+                    <span class="arrow" id="callArrow"></span>
+                    <span class="percent" id="callPercent"></span>
+                </div>
+                <div class="option-section">
+                    <div class="option-heading">Current Market Price</div>
+                    <span class="market-label big-value" id="callMarketValue">{{ current_rate }}</span>
+                    <span class="arrow" id="callMarketArrow"></span>
+                    <span class="percent" id="callMarketPercent"></span>
+                </div>
+            </div>
+            <div class="put-box">
+                <span class="put-label">PUT</span>
+                <div class="option-section">
+                    <div class="option-heading">Black-Scholes Option Price</div>
+                    <span class="put-value big-value" id="putValue">{{ put_price if put_price is not none else current_rate }}</span>
+                    <span class="arrow" id="putArrow"></span>
+                    <span class="percent" id="putPercent"></span>
+                </div>
+                <div class="option-section">
+                    <div class="option-heading">Current Market Price</div>
+                    <span class="market-label big-value" id="putMarketValue">{{ current_rate }}</span>
+                    <span class="arrow" id="putMarketArrow"></span>
+                    <span class="percent" id="putMarketPercent"></span>
+                </div>
+            </div>
+        </div>
+        <div class="broker-payout" id="brokerPayout">
+            <strong>Broker:</strong> <span id="brokerName2">{{ selected_broker }}</span> &nbsp; | &nbsp;
+            <strong>Payout/Odds:</strong> <span id="payoutVal">{{ (payout * 100) | round(0) }}%</span>
+        </div>
+        <div class="pricing-params" id="pricingParams">
+            <strong>Pricing Parameters:</strong><br>
+            Volatility (σ): <span id="volatilityVal">{{ volatility }}</span><br>
+            Expiry (T, years): <span id="expiryVal">{{ expiry }}</span><br>
+            Risk-free Rate (r): <span id="riskFreeVal">{{ risk_free_rate }}</span>
+        </div>
+    </div>
+    {% endif %}
+    <div class="graph-card">
+        <canvas id="priceChart" height="60"></canvas>
+        <div id="noDataMsg" style="display:none;color:#d32f2f;text-align:center;margin-top:8px;font-size:1.05rem;">No real-time price data available.</div>
+    </div>
+    <div class="signals-list" style="flex:1 1 320px;min-width:320px;max-width:400px;background:#fff;border-radius:14px;box-shadow:0 2px 12px rgba(42,77,143,0.07);padding:24px 24px 18px 24px;margin-bottom:24px;">
+        <h2 style="color:#2a4d8f;margin-bottom:18px;font-size:1.3rem;letter-spacing:1px;">Generated Signals</h2>
+        {% for s in signals %}
+            <div class="signal {{ s.direction }}">{{ s.time }} - {{ s.pair }} - OTCrt - {{ s.direction }}</div>
+        {% endfor %}
+    </div>
+</div>
+<footer class="main-footer">
+    <div class="footer-content">
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="KishanX Logo" class="footer-logo">
+        <span>&copy; {{ 2024 }} KishanX. All rights reserved.</span>
+    </div>
+</footer>
+<style>
+html, body.page-flex {
+    height: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body.page-flex {
+    flex: 1 0 auto;
+    margin: 0;
+    padding: 0;
+}
+.main-content {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 32px;
+    justify-content: space-between;
+    align-items: flex-start;
+    max-width: 1200px;
+    margin: 32px auto 0 auto;
+    padding: 0 16px;
+    width: 100%;
+    box-sizing: border-box;
+    flex: 1 0 auto;
+}
+.rate-title {
+    font-size: 1.18rem;
+    color: #fff;
+    font-weight: 700;
+    margin-bottom: 10px;
+    background: linear-gradient(90deg, #2a4d8f 60%, #3b7dd8 100%);
+    padding: 10px 16px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.rate-label {
+    color: #fff;
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+.broker-label {
+    color: #e0e7ef;
+    font-size: 1.05rem;
+    font-weight: 500;
+}
+.big-value {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-right: 6px;
+}
+.call-value {
+    color: #22c55e;
+}
+.put-value {
+    color: #ef4444;
+}
+.market-label {
+    font-size: 1.08rem;
+    color: #1e293b;
+    margin-top: 2px;
+    font-weight: 600;
+}
+.arrow {
+    font-size: 1.1rem;
+    margin-left: 4px;
+}
+.percent {
+    font-size: 0.98rem;
+    margin-left: 2px;
+    font-weight: 500;
+}
+footer.main-footer {
+    margin-top: auto;
+    background: #2a4d8f;
+    color: #fff;
+    text-align: center;
+    padding: 18px 0 12px 0;
+    box-sizing: border-box;
+    width: 100%;
+}
+.footer-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+}
+.footer-logo {
+    height: 24px;
+    width: 24px;
+}
+@media (max-width: 1100px) {
+    .main-content {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 18px;
+    }
+    .rate-box, .graph-card, .signals-list {
+        max-width: 100%;
+        min-width: 0;
+    }
+}
+@media (max-width: 600px) {
+    .main-content {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+        padding: 0 2vw;
+    }
+    .rate-box, .graph-card, .signals-list {
+        padding: 12px 6px 10px 6px;
+        margin-bottom: 12px;
+    }
+    .callput-row {
+        flex-direction: column;
+        gap: 10px;
+    }
+}
+.action-links {
+    width: 100%;
+    margin-bottom: 0;
+}
+.main-header {
+    background: rgba(255,255,255,0.18);
+    backdrop-filter: blur(16px);
+    border-bottom: 1.5px solid #e3eaf6;
+    box-shadow: 0 8px 32px 0 rgba(31,38,135,0.18);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+.header-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 16px 32px 16px 32px;
+    border-radius: 0 0 22px 22px;
+    background: linear-gradient(90deg, rgba(42,77,143,0.10) 0%, rgba(59,125,216,0.10) 100%);
+    box-shadow: 0 2px 12px rgba(42,77,143,0.08);
+}
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+.logo {
+    height: 38px;
+    width: 38px;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 2px 8px rgba(42,77,143,0.10);
+    background: #fff;
+    padding: 3px;
+    border: 2px solid #e3eaf6;
+}
+.company-name {
+    font-size: 1.35rem;
+    font-weight: 800;
+    letter-spacing: 1.2px;
+    color: #2a4d8f;
+    text-shadow: 0 2px 8px rgba(42,77,143,0.10);
+    font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+}
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.nav-links a {
+    color: #2a4d8f;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 1.08rem;
+    padding: 8px 22px;
+    border-radius: 999px;
+    background: rgba(42,77,143,0.10);
+    transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+    box-shadow: 0 1px 4px rgba(42,77,143,0.06);
+    border: 1.5px solid transparent;
+}
+.nav-links a:hover {
+    background: #2a4d8f;
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(42,77,143,0.12);
+    border: 1.5px solid #3b7dd8;
+}
+@media (max-width: 900px) {
+    .header-content {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 12px 8px 12px 8px;
+        gap: 8px;
+    }
+    .logo {
+        height: 30px;
+        width: 30px;
+    }
+    .company-name {
+        font-size: 1.08rem;
+    }
+}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+let priceData = [];
+let priceLabels = [];
+let priceChart = null;
+
+// Track previous values for arrows and percent
+let prev = {
+    callMarket: null,
+    putMarket: null,
+    call: null,
+    put: null
+};
+
+function arrowAndPercent(newVal, oldVal) {
+    if (oldVal === null || typeof newVal !== 'number' || typeof oldVal !== 'number') return ['', ''];
+    const diff = newVal - oldVal;
+    const percent = oldVal !== 0 ? (diff / oldVal) * 100 : 0;
+    if (diff > 0) return ["<span style='color:#22c55e'>▲</span>", `<span style='color:#22c55e'>+${percent.toFixed(2)}%</span>`];
+    if (diff < 0) return ["<span style='color:#ef4444'>▼</span>", `<span style='color:#ef4444'>${percent.toFixed(2)}%</span>`];
+    return ["", "<span style='color:#888'>0.00%</span>"];
+}
+
+function updatePrices() {
+    let pair = document.getElementById('pairName')?.textContent;
+    let broker = document.getElementById('brokerName2')?.textContent;
+    if (!pair && document.querySelector('.signal')) {
+        pair = document.querySelector('.signal').textContent.split(' - ')[1];
+    }
+    if (!broker) broker = 'Quotex';
+    // Update broker name and payout
+    if(document.getElementById('brokerName')) document.getElementById('brokerName').textContent = `(${broker})`;
+    if(document.getElementById('brokerName2')) document.getElementById('brokerName2').textContent = broker;
+    let payout = 0.75;
+    switch(broker) {
+        case 'Quotex': payout = 0.85; break;
+        case 'Pocket Option': payout = 0.80; break;
+        case 'Binolla': payout = 0.78; break;
+        case 'IQ Option': payout = 0.82; break;
+        case 'Bullex': payout = 0.75; break;
+        case 'Exnova': payout = 0.77; break;
+    }
+    if(document.getElementById('payoutVal')) document.getElementById('payoutVal').textContent = Math.round(payout * 100) + '%';
+    fetch(`/api/price/${pair}`)
+        .then(response => response.json())
+        .then(data => {
+            // CALL Option
+            const callElem = document.getElementById('callValue');
+            if(callElem) {
+                const val = data.call_price !== null ? data.call_price : null;
+                const [arrow, percent] = arrowAndPercent(val, prev.call);
+                callElem.textContent = val !== null ? val.toFixed(6) : 'N/A';
+                document.getElementById('callArrow').innerHTML = arrow;
+                document.getElementById('callPercent').innerHTML = percent;
+                prev.call = val;
+            }
+            // PUT Option
+            const putElem = document.getElementById('putValue');
+            if(putElem) {
+                const val = data.put_price !== null ? data.put_price : null;
+                const [arrow, percent] = arrowAndPercent(val, prev.put);
+                putElem.textContent = val !== null ? val.toFixed(6) : 'N/A';
+                document.getElementById('putArrow').innerHTML = arrow;
+                document.getElementById('putPercent').innerHTML = percent;
+                prev.put = val;
+            }
+            // Current Market Price (CALL)
+            const callMarketElem = document.getElementById('callMarketValue');
+            if(callMarketElem) {
+                const val = data.rate !== null ? data.rate : null;
+                const [arrow, percent] = arrowAndPercent(val, prev.callMarket);
+                callMarketElem.textContent = val !== null ? val : 'N/A';
+                document.getElementById('callMarketArrow').innerHTML = arrow;
+                document.getElementById('callMarketPercent').innerHTML = percent;
+                prev.callMarket = val;
+            }
+            // Current Market Price (PUT)
+            const putMarketElem = document.getElementById('putMarketValue');
+            if(putMarketElem) {
+                const val = data.rate !== null ? data.rate : null;
+                const [arrow, percent] = arrowAndPercent(val, prev.putMarket);
+                putMarketElem.textContent = val !== null ? val : 'N/A';
+                document.getElementById('putMarketArrow').innerHTML = arrow;
+                document.getElementById('putMarketPercent').innerHTML = percent;
+                prev.putMarket = val;
+            }
+            if(document.getElementById('pairName')) document.getElementById('pairName').textContent = pair;
+            if(document.getElementById('rateTitle')) document.getElementById('rateTitle').innerHTML = `<span class='rate-label'>Current Rate for</span> <span id='pairName'>${pair}</span> <span id='brokerName' class='broker-label'>(${broker})</span>`;
+            if(document.getElementById('brokerName2')) document.getElementById('brokerName2').textContent = broker;
+            if(document.getElementById('payoutVal')) document.getElementById('payoutVal').textContent = Math.round(payout * 100) + '%';
+            if(document.getElementById('pricingParams')) document.getElementById('pricingParams').innerHTML = `
+                <strong>Pricing Parameters:</strong><br>
+                Volatility (σ): <span id='volatilityVal'>${data.volatility}</span><br>
+                Expiry (T, years): <span id='expiryVal'>${data.expiry}</span><br>
+                Risk-free Rate (r): <span id='riskFreeVal'>${data.risk_free_rate}</span>
+            `;
+            // Update chart
+            const now = new Date();
+            const label = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', second:'2-digit'});
+            const noDataMsg = document.getElementById('noDataMsg');
+            if (typeof data.rate === 'number' && !isNaN(data.rate)) {
+                if (priceLabels.length > 30) { priceLabels.shift(); priceData.shift(); }
+                priceLabels.push(label);
+                priceData.push(data.rate);
+                if (priceChart) {
+                    priceChart.data.labels = priceLabels;
+                    priceChart.data.datasets[0].data = priceData;
+                    priceChart.update();
+                }
+                if (noDataMsg) noDataMsg.style.display = 'none';
+            } else {
+                if (noDataMsg) noDataMsg.style.display = 'block';
+            }
+        });
+}
+setInterval(updatePrices, 10000); // Update every 10 seconds
+
+document.addEventListener('DOMContentLoaded', function() {
+    updatePrices();
+    // Chart.js setup
+    const ctx = document.getElementById('priceChart').getContext('2d');
+    priceChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: priceLabels,
+            datasets: [{
+                label: 'Real-Time Price',
+                data: priceData,
+                borderColor: '#2a4d8f',
+                backgroundColor: 'rgba(42,77,143,0.08)',
+                tension: 0.25,
+                pointRadius: 2,
+                borderWidth: 2,
+                fill: true,
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: { legend: { display: false } },
+            scales: {
+                x: { display: true, title: { display: false } },
+                y: { display: true, title: { display: false } }
+            }
+        }
+    });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>KishanX Signals</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body class="page-flex" id="bodyRoot">
+<header class="main-header">
+    <div class="header-content">
+        <div class="header-left">
+            <img src="{{ url_for('static', filename='logo5.png') }}" alt="KishanX Logo" class="logo">
+            <span class="company-name">Kishan X Trading Signals</span>
+        </div>
+        <button class="mobile-menu-btn" aria-label="Toggle menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        <nav class="nav-links">
+            <a href="/" {% if request.path == '/' %}class="active"{% endif %}>Forex</a>
+            <a href="/otc" {% if request.path == '/otc' %}class="active"{% endif %}>OTC</a>
+            <a href="/indian" {% if request.path == '/indian' %}class="active"{% endif %}>Indian</a>
+            <a href="/dashboard">Dashboard</a>
+            <a href="/profile" {% if request.path == '/profile' %}class="active"{% endif %}>Profile</a>
+            <a href="/legal" {% if request.path == '/legal' %}class="active"{% endif %}>Legal</a>
+            <a href="/logout">Logout</a>
+            <button id="themeToggle" class="theme-toggle" title="Toggle dark mode" aria-label="Toggle dark mode">
+                <span id="themeIcon">🌙</span>
+            </button>
+        </nav>
+    </div>
+</header>
+<div class="main-content three-col">
+    {% if current_rate %}
+    <div class="rate-box" id="rateBox">
+        <div class="rate-title" id="rateTitle">
+            Current Rate for <span id="pairName">{{ selected_pair }}</span>
+            <span id="brokerName">({{ selected_broker }})</span>
+        </div>
+        <div class="callput-row">
+            <div class="call-box">
+                <span class="call-label">CALL</span>
+                <div class="option-section">
+                    <div class="option-heading">Black-Scholes Option Price</div>
+                    <span class="call-value" id="callValue">{{ call_price if call_price is not none else current_rate }}</span>
+                </div>
+                <div class="option-section">
+                    <div class="option-heading">Current Market Price</div>
+                    <span class="market-label"> <span id="callMarketValue">{{ current_rate }}</span></span>
+                </div>
+            </div>
+            <div class="put-box">
+                <span class="put-label">PUT</span>
+                <div class="option-section">
+                    <div class="option-heading">Black-Scholes Option Price</div>
+                    <span class="put-value" id="putValue">{{ put_price if put_price is not none else current_rate }}</span>
+                </div>
+                <div class="option-section">
+                    <div class="option-heading">Current Market Price</div>
+                    <span class="market-label"> <span id="putMarketValue">{{ current_rate }}</span></span>
+                </div>
+            </div>
+        </div>
+        <div class="broker-payout" id="brokerPayout">
+            <strong>Broker:</strong> <span id="brokerName2">{{ selected_broker }}</span> &nbsp; | &nbsp;
+            <strong>Payout/Odds:</strong> <span id="payoutVal">{{ (payout * 100) | round(0) }}%</span>
+        </div>
+        <div class="pricing-params" id="pricingParams">
+            <strong>Pricing Parameters:</strong><br>
+            Volatility (σ): <span id="volatilityVal">{{ volatility }}</span><br>
+            Expiry (T, years): <span id="expiryVal">{{ expiry }}</span><br>
+            Risk-free Rate (r): <span id="riskFreeVal">{{ risk_free_rate }}</span>
+        </div>
+    </div>
+    {% endif %}
+    <div class="graph-card">
+        <div class="graph-title">Real-Time Price Chart</div>
+        <canvas id="priceChart" height="60"></canvas>
+        <div id="noDataMsg" style="display:none;color:#d32f2f;text-align:center;margin-top:8px;font-size:1.05rem;">No real-time price data available.</div>
+    </div>
+    <form method="POST" class="signal-form">
+        <h2>Kishan X Signal Generator</h2>
+        {% if error %}<p class="error">{{ error }}</p>{% endif %}
+        <label>Pair:</label>
+        <select name="pair" id="pairSelect">
+            {% for pair in pairs %}
+                <option value="{{ pair }}" {% if pair == selected_pair %}selected{% endif %}>{{ pair }}</option>
+            {% endfor %}
+        </select>
+        <label>Broker:</label>
+        <select name="broker">{% for broker in brokers %}<option>{{ broker }}</option>{% endfor %}</select>
+        <label>Signal Type:</label>
+        <select name="signal_type" required>
+            <option value="CALL">CALL</option>
+            <option value="PUT">PUT</option>
+            <option value="BOTH">BOTH</option>
+        </select>
+        <label>Start Time:</label>
+        <div class="time-select">
+            <select name="start_hour">
+                {% for h in range(0,24) %}
+                    <option value="{{ '%02d' % h }}">{{ '%02d' % h }}</option>
+                {% endfor %}
+            </select> :
+            <select name="start_minute">
+                {% for m in range(0,60,5) %}
+                    <option value="{{ '%02d' % m }}">{{ '%02d' % m }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <label>End Time:</label>
+        <div class="time-select">
+            <select name="end_hour">
+                {% for h in range(0,24) %}
+                    <option value="{{ '%02d' % h }}">{{ '%02d' % h }}</option>
+                {% endfor %}
+            </select> :
+            <select name="end_minute">
+                {% for m in range(0,60,5) %}
+                    <option value="{{ '%02d' % m }}">{{ '%02d' % m }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <button type="submit">Generate</button>
+    </form>
+</div>
+<footer class="main-footer">
+    <div class="footer-content">
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="KishanX Logo" class="footer-logo">
+        <span>&copy; {{ 2024 }} KishanX. All rights reserved.</span>
+    </div>
+</footer>
+<style>
+@import url('https://fonts.googleapis.com/css?family=Segoe+UI:400,700,900&display=swap');
+html, body.page-flex {
+    height: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    background: #f4f8fb;
+}
+body.page-flex {
+    flex: 1 0 auto;
+    margin: 0;
+    padding: 0;
+}
+.main-header {
+    background: linear-gradient(90deg, #2a4d8f 60%, #3b7dd8 100%);
+    box-shadow: 0 2px 12px rgba(42,77,143,0.08);
+    border-bottom: 1.5px solid #e3eaf6;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+.header-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 12px 16px 12px 16px;
+    width: 100%;
+    box-sizing: border-box;
+}
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+.logo {
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 2px 8px rgba(42,77,143,0.10);
+    background: #fff;
+    padding: 3px;
+    border: 2px solid #e3eaf6;
+}
+.company-name {
+    font-size: 1.5rem;
+    font-weight: 900;
+    letter-spacing: 1.5px;
+    color: #fff;
+    text-shadow: 0 2px 8px rgba(42,77,143,0.10);
+    font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+}
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.nav-links a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 1.08rem;
+    padding: 8px 22px;
+    border-radius: 999px;
+    background: rgba(42,77,143,0.10);
+    transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+    box-shadow: 0 1px 4px rgba(42,77,143,0.06);
+    border: 1.5px solid transparent;
+}
+.nav-links a:hover, .nav-links a.active {
+    background: #fff;
+    color: #2a4d8f;
+    box-shadow: 0 2px 8px rgba(42,77,143,0.12);
+    border: 1.5px solid #3b7dd8;
+}
+.dark-toggle-btn {
+    margin-left: 6px;
+    background: rgba(42,77,143,0.10);
+    border: none;
+    cursor: pointer;
+    font-size: 1.1rem;
+    outline: none;
+    border-radius: 50%;
+    padding: 6px 8px;
+    color: #2a4d8f;
+    transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 1px 4px rgba(42,77,143,0.06);
+    border: 1.5px solid transparent;
+}
+.dark-toggle-btn:hover {
+    background: #2a4d8f;
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(42,77,143,0.12);
+    border: 1.5px solid #3b7dd8;
+}
+.main-content.three-col {
+    flex: 1 0 auto;
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 32px;
+    justify-content: center;
+    align-items: flex-start;
+    max-width: 1200px;
+    margin: 32px auto 0 auto;
+    padding: 0 8px;
+    width: 100%;
+}
+.main-content.three-col > * {
+    flex: 1 1 0;
+    min-width: 0;
+    max-width: 380px;
+}
+.rate-box, .graph-card, .signal-form, .signals-list {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 2px 16px rgba(42,77,143,0.10);
+    padding: 24px 24px 18px 24px;
+    margin-bottom: 24px;
+    transition: box-shadow 0.2s, border 0.2s;
+}
+.rate-box {
+    border: 2px solid #dbeafe;
+}
+.graph-card {
+    border: 2px solid #dbeafe;
+    background: linear-gradient(120deg, #f7fafd 60%, #e3eaf6 100%);
+    margin-top: 10px;
+    position: relative;
+}
+.signal-form {
+    background: linear-gradient(120deg, #e3eaf6 60%, #f7fafd 100%);
+    border: 2px solid #dbeafe;
+    border-radius: 18px;
+    box-shadow: 0 4px 24px rgba(42,77,143,0.10);
+    padding: 32px 28px 18px 28px;
+    margin-bottom: 24px;
+    margin-top: 10px;
+    max-width: 400px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    transition: box-shadow 0.2s, border 0.2s;
+}
+.signal-form h2 {
+    color: #2a4d8f;
+    font-size: 1.35rem;
+    font-weight: 700;
+    margin-bottom: 18px;
+    text-align: center;
+    letter-spacing: 1px;
+}
+.signal-form label {
+    font-weight: 600;
+    color: #2a4d8f;
+    margin-top: 10px;
+    margin-bottom: 4px;
+}
+.signal-form select, .signal-form input[type="text"], .signal-form input[type="password"] {
+    width: 100%;
+    padding: 10px 12px;
+    margin-bottom: 12px;
+    border: 1.5px solid #cfd8dc;
+    border-radius: 7px;
+    font-size: 1rem;
+    background: #f9fafb;
+    transition: border 0.2s;
+}
+.signal-form select:focus, .signal-form input:focus {
+    border: 1.5px solid #2a4d8f;
+    outline: none;
+}
+.signal-form button {
+    width: 100%;
+    padding: 12px;
+    background: linear-gradient(90deg, #2a4d8f 60%, #3b7dd8 100%);
+    color: #fff;
+    border: none;
+    border-radius: 7px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(42,77,143,0.08);
+    transition: background 0.2s;
+    margin-top: 10px;
+}
+.signal-form button:hover {
+    background: linear-gradient(90deg, #3b7dd8 60%, #2a4d8f 100%);
+}
+.signal-form .error {
+    color: #d32f2f;
+    background: #ffeaea;
+    padding: 8px 12px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    font-size: 0.98rem;
+    width: 100%;
+    text-align: center;
+}
+.signals-list {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 2px 16px rgba(42,77,143,0.10);
+    padding: 24px 24px 18px 24px;
+    margin-bottom: 24px;
+    border: 2px solid #dbeafe;
+}
+.signals-list h2 {
+    color: #2a4d8f;
+    margin-bottom: 18px;
+    font-size: 1.3rem;
+    letter-spacing: 1px;
+}
+.signal {
+    padding: 10px;
+    margin: 10px 0;
+    color: white;
+    border-radius: 5px;
+    font-size: 1.08rem;
+    font-weight: 500;
+    box-shadow: 0 1px 4px rgba(42,77,143,0.04);
+}
+.CALL {
+    background: linear-gradient(90deg, #22c55e 60%, #4ade80 100%);
+}
+.PUT {
+    background: linear-gradient(90deg, #ef4444 60%, #f87171 100%);
+}
+@media (max-width: 1100px) {
+    .main-content.three-col {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 18px;
+    }
+    .main-content.three-col > * {
+        max-width: 100%;
+        min-width: 0;
+    }
+}
+@media (max-width: 600px) {
+    .main-content.three-col {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+        padding: 0 2vw;
+    }
+    .rate-box, .graph-card, .signal-form, .signals-list {
+        padding: 12px 6px 10px 6px;
+        margin-bottom: 12px;
+    }
+    .callput-row {
+        flex-direction: column;
+        gap: 10px;
+    }
+    .graph-card {
+        padding: 14px 4px 10px 4px;
+        border-radius: 12px;
+    }
+    .graph-title {
+        font-size: 1.08rem;
+        margin-bottom: 10px;
+    }
+    #priceChart {
+        border-radius: 8px;
+    }
+    .signal-form {
+        padding: 14px 4px 10px 4px;
+        border-radius: 12px;
+    }
+    .signal-form h2 {
+        font-size: 1.08rem;
+        margin-bottom: 10px;
+    }
+    .signals-list {
+        padding: 14px 4px 10px 4px;
+        border-radius: 12px;
+    }
+    .signals-list h2 {
+        font-size: 1.08rem;
+        margin-bottom: 10px;
+    }
+}
+.main-footer {
+    margin-top: auto;
+    background: #2a4d8f;
+    color: #fff;
+    text-align: center;
+    padding: 18px 0 12px 0;
+    box-sizing: border-box;
+}
+.footer-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+}
+.footer-logo {
+    height: 28px;
+}
+.pricing-params {
+    background: #e3eaf6;
+    border-radius: 8px;
+    padding: 10px 14px;
+    margin-bottom: 18px;
+    margin-top: 0px;
+    font-size: 0.98rem;
+    color: #1e293b;
+    box-shadow: 0 1px 4px rgba(42,77,143,0.04);
+}
+.pricing-params span {
+    color: #2a4d8f;
+    font-weight: 600;
+}
+.graph-card {
+    background: linear-gradient(120deg, #f7fafd 60%, #e3eaf6 100%);
+    border: 2px solid #dbeafe;
+    border-radius: 18px;
+    box-shadow: 0 4px 24px rgba(42,77,143,0.10);
+    padding: 32px 28px 18px 28px;
+    margin-bottom: 24px;
+    margin-top: 10px;
+    position: relative;
+    transition: box-shadow 0.2s, border 0.2s;
+}
+.graph-title {
+    font-size: 1.18rem;
+    font-weight: 700;
+    color: #2a4d8f;
+    margin-bottom: 18px;
+    letter-spacing: 1px;
+    text-align: center;
+    text-shadow: 0 2px 8px rgba(42,77,143,0.08);
+}
+#priceChart {
+    background: rgba(255,255,255,0.85);
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(42,77,143,0.06);
+    padding: 8px;
+}
+.broker-payout {
+    margin-top: 10px;
+    font-size: 1.05rem;
+    color: #2a4d8f;
+    background: #e3eaf6;
+    padding: 7px 12px;
+    border-radius: 7px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    justify-content: center;
+}
+.market-label {
+    font-size: 0.97rem;
+    color: #555;
+    margin-top: 2px;
+    font-weight: 400;
+}
+.option-section {
+    margin-top: 4px;
+    margin-bottom: 2px;
+    text-align: center;
+}
+.option-heading {
+    font-size: 0.97rem;
+    color: #2a4d8f;
+    font-weight: 600;
+    margin-bottom: 1px;
+}
+.callput-row {
+    display: flex;
+    gap: 24px;
+    justify-content: space-between;
+    margin-bottom: 16px;
+}
+.call-box, .put-box {
+    flex: 1;
+    background: #fff;
+    border-radius: 12px;
+    padding: 16px 12px 12px 12px;
+    box-shadow: 0 2px 8px rgba(42,77,143,0.06);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0 2px;
+}
+@media (max-width: 600px) {
+    .rate-box {
+        padding: 14px 4px 10px 4px;
+        border-radius: 12px;
+    }
+    .rate-title {
+        font-size: 1.08rem;
+        margin-bottom: 10px;
+    }
+    .callput-row {
+        flex-direction: column;
+        gap: 10px;
+        margin-bottom: 8px;
+    }
+    .call-box, .put-box {
+        padding: 10px 4px 8px 4px;
+        border-radius: 8px;
+    }
+}
+/* DARK MODE STYLES */
+body.dark-mode, body.dark-mode .main-header, body.dark-mode .main-footer {
+    background: #181f2a !important;
+    color: #e3eaf6 !important;
+}
+body.dark-mode .main-header, body.dark-mode .main-footer {
+    background: #232c3d !important;
+    color: #e3eaf6 !important;
+}
+body.dark-mode .main-content.three-col > *,
+body.dark-mode .rate-box, body.dark-mode .graph-card, body.dark-mode .signal-form {
+    background: linear-gradient(120deg, #232c3d 60%, #181f2a 100%) !important;
+    color: #e3eaf6 !important;
+    border: 2px solid #2a4d8f !important;
+    box-shadow: 0 4px 24px rgba(20,30,50,0.25) !important;
+}
+body.dark-mode .rate-title, body.dark-mode .graph-title, body.dark-mode .signal-form h2, body.dark-mode .option-heading, body.dark-mode .pricing-params, body.dark-mode .broker-payout {
+    color: #7bb0ff !important;
+}
+body.dark-mode .signal-form label {
+    color: #7bb0ff !important;
+}
+body.dark-mode .signal-form select, body.dark-mode .signal-form input[type="text"], body.dark-mode .signal-form input[type="password"] {
+    background: #232c3d !important;
+    color: #e3eaf6 !important;
+    border: 1.5px solid #2a4d8f !important;
+}
+body.dark-mode .signal-form button {
+    background: linear-gradient(90deg, #3b7dd8 60%, #2a4d8f 100%) !important;
+    color: #fff !important;
+}
+body.dark-mode .signal-form button:hover {
+    background: linear-gradient(90deg, #2a4d8f 60%, #3b7dd8 100%) !important;
+}
+body.dark-mode .pricing-params, body.dark-mode .broker-payout {
+    background: #232c3d !important;
+    color: #7bb0ff !important;
+}
+body.dark-mode .market-label {
+    color: #b0c4e7 !important;
+}
+body.dark-mode .error {
+    background: #3b1f1f !important;
+    color: #ffb3b3 !important;
+}
+body.dark-mode #priceChart {
+    background: #232c3d !important;
+}
+/* Mobile menu styles */
+.mobile-menu-btn {
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 30px;
+    height: 21px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    z-index: 1001;
+}
+
+.mobile-menu-btn span {
+    display: block;
+    width: 100%;
+    height: 3px;
+    background: #2a4d8f;
+    border-radius: 3px;
+    transition: all 0.3s ease;
+}
+
+@media (max-width: 768px) {
+    .mobile-menu-btn {
+        display: flex;
+    }
+
+    .nav-links {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 250px;
+        height: 100vh;
+        background: #fff;
+        flex-direction: column;
+        padding: 80px 24px 24px;
+        gap: 16px;
+        transition: right 0.3s ease;
+        box-shadow: -2px 0 12px rgba(42,77,143,0.1);
+    }
+
+    body.dark-mode .nav-links {
+        background: #232c3d;
+    }
+
+    .nav-links.active {
+        right: 0;
+    }
+
+    .nav-links a {
+        width: 100%;
+        text-align: left;
+        padding: 12px 16px;
+    }
+
+    .company-name {
+        font-size: 1rem;
+    }
+
+    .logo {
+        height: 32px;
+    }
+
+    .header-content {
+        padding: 8px 16px;
+    }
+
+    .mobile-menu-btn.active span:nth-child(1) {
+        transform: translateY(9px) rotate(45deg);
+    }
+
+    .mobile-menu-btn.active span:nth-child(2) {
+        opacity: 0;
+    }
+
+    .mobile-menu-btn.active span:nth-child(3) {
+        transform: translateY(-9px) rotate(-45deg);
+    }
+
+    body.dark-mode .mobile-menu-btn span {
+        background: #e3eaf6;
+    }
+}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+let priceData = [];
+let priceLabels = [];
+let priceChart = null;
+
+function updatePrices() {
+    const pair = document.getElementById('pairSelect').value;
+    const broker = document.querySelector('select[name="broker"]').value;
+    // Update broker name and payout
+    if(document.getElementById('brokerName')) document.getElementById('brokerName').textContent = `(${broker})`;
+    if(document.getElementById('brokerName2')) document.getElementById('brokerName2').textContent = broker;
+    let payout = 0.75;
+    switch(broker) {
+        case 'Quotex': payout = 0.85; break;
+        case 'Pocket Option': payout = 0.80; break;
+        case 'Binolla': payout = 0.78; break;
+        case 'IQ Option': payout = 0.82; break;
+        case 'Bullex': payout = 0.75; break;
+        case 'Exnova': payout = 0.77; break;
+    }
+    if(document.getElementById('payoutVal')) document.getElementById('payoutVal').textContent = Math.round(payout * 100) + '%';
+    fetch(`/api/price/${pair}`)
+        .then(response => response.json())
+        .then(data => {
+            if(document.getElementById('pairName')) document.getElementById('pairName').textContent = pair;
+            if(document.getElementById('callValue')) document.getElementById('callValue').textContent = data.call_price !== null ? data.call_price.toFixed(6) : 'N/A';
+            if(document.getElementById('putValue')) document.getElementById('putValue').textContent = data.put_price !== null ? data.put_price.toFixed(6) : 'N/A';
+            if(document.getElementById('callMarketValue')) document.getElementById('callMarketValue').textContent = data.rate !== null ? data.rate : 'N/A';
+            if(document.getElementById('putMarketValue')) document.getElementById('putMarketValue').textContent = data.rate !== null ? data.rate : 'N/A';
+            if(document.getElementById('rateTitle')) document.getElementById('rateTitle').innerHTML = `Current Rate for <span id='pairName'>${pair}</span> <span id='brokerName'>(${broker})</span>`;
+            if(document.getElementById('brokerName2')) document.getElementById('brokerName2').textContent = broker;
+            if(document.getElementById('payoutVal')) document.getElementById('payoutVal').textContent = Math.round(payout * 100) + '%';
+            if(document.getElementById('pricingParams')) document.getElementById('pricingParams').innerHTML = `
+                <strong>Pricing Parameters:</strong><br>
+                Volatility (σ): <span id='volatilityVal'>${data.volatility}</span><br>
+                Expiry (T, years): <span id='expiryVal'>${data.expiry}</span><br>
+                Risk-free Rate (r): <span id='riskFreeVal'>${data.risk_free_rate}</span>
+            `;
+            // Update chart
+            const now = new Date();
+            const label = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', second:'2-digit'});
+            const noDataMsg = document.getElementById('noDataMsg');
+            if (typeof data.rate === 'number' && !isNaN(data.rate)) {
+                if (priceLabels.length > 30) { priceLabels.shift(); priceData.shift(); }
+                priceLabels.push(label);
+                priceData.push(data.rate);
+                if (priceChart) {
+                    priceChart.data.labels = priceLabels;
+                    priceChart.data.datasets[0].data = priceData;
+                    priceChart.update();
+                }
+                if (noDataMsg) noDataMsg.style.display = 'none';
+            } else {
+                if (noDataMsg) noDataMsg.style.display = 'block';
+            }
+        });
+}
+setInterval(updatePrices, 10000); // Update every 10 seconds
+
+document.addEventListener('DOMContentLoaded', function() {
+    updatePrices();
+    document.getElementById('pairSelect').addEventListener('change', function() {
+        priceLabels = [];
+        priceData = [];
+        updatePrices();
+    });
+    document.querySelector('select[name="broker"]').addEventListener('change', updatePrices);
+    // Chart.js setup
+    const canvas = document.getElementById('priceChart');
+    if (canvas) {
+        const ctx = canvas.getContext('2d');
+        priceChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: priceLabels,
+                datasets: [{
+                    label: 'Real-Time Price',
+                    data: priceData,
+                    borderColor: '#2a4d8f',
+                    backgroundColor: 'rgba(42,77,143,0.08)',
+                    tension: 0.25,
+                    pointRadius: 2,
+                    borderWidth: 2,
+                    fill: true,
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { display: true, title: { display: false } },
+                    y: { display: true, title: { display: false } }
+                }
+            }
+        });
+    }
+});
+
+// Dark mode toggle
+const themeToggle = document.getElementById('themeToggle');
+const themeIcon = document.getElementById('themeIcon');
+
+function setTheme(dark) {
+    if (dark) {
+        document.body.classList.add('dark-mode');
+        themeIcon.textContent = '☀️';
+    } else {
+        document.body.classList.remove('dark-mode');
+        themeIcon.textContent = '🌙';
+    }
+    localStorage.setItem('theme', dark ? 'dark' : 'light');
+}
+
+if (themeToggle) {
+    themeToggle.addEventListener('click', () => {
+        setTheme(!document.body.classList.contains('dark-mode'));
+    });
+}
+
+// On load, set theme from localStorage
+if (localStorage.getItem('theme') === 'dark') {
+    setTheme(true);
+}
+
+// Mobile menu functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+    const navLinks = document.querySelector('.nav-links');
+    
+    mobileMenuBtn.addEventListener('click', function() {
+        this.classList.toggle('active');
+        navLinks.classList.toggle('active');
+    });
+
+    // Close menu when clicking outside
+    document.addEventListener('click', function(event) {
+        if (!event.target.closest('.nav-links') && !event.target.closest('.mobile-menu-btn')) {
+            mobileMenuBtn.classList.remove('active');
+            navLinks.classList.remove('active');
+        }
+    });
+
+    // Close menu when clicking a link
+    navLinks.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+            mobileMenuBtn.classList.remove('active');
+            navLinks.classList.remove('active');
+        });
+    });
+});
+</script>
+</body>
+</html>

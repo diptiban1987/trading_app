@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Subscription Plans - KishanXSignals</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        .subscription-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            padding: 16px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .logo {
+            height: 40px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 24px;
+            margin: 0 24px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .nav-link {
+            color: #1e293b;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 12px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+        }
+
+        .nav-link:hover {
+            background: #2a4d8f;
+            color: white;
+            border-color: #2a4d8f;
+        }
+
+        .nav-link.active {
+            background: #2a4d8f;
+            color: white;
+            border-color: #2a4d8f;
+        }
+
+        .logout-btn {
+            background: #ef4444;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .logout-btn:hover {
+            background: #dc2626;
+        }
+
+        .plans-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            margin-top: 40px;
+        }
+
+        .plan-card {
+            background: white;
+            border-radius: 12px;
+            padding: 32px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            border: 2px solid transparent;
+        }
+
+        .plan-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .plan-card.popular {
+            border-color: #2a4d8f;
+        }
+
+        .popular-badge {
+            position: absolute;
+            top: -12px;
+            right: 24px;
+            background: #2a4d8f;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .plan-name {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 16px;
+        }
+
+        .plan-price {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #2a4d8f;
+            margin-bottom: 8px;
+        }
+
+        .plan-period {
+            color: #64748b;
+            font-size: 1rem;
+            margin-bottom: 24px;
+        }
+
+        .plan-features {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 32px 0;
+        }
+
+        .plan-features li {
+            color: #475569;
+            padding: 8px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .plan-features li::before {
+            content: "✓";
+            color: #2a4d8f;
+            font-weight: bold;
+        }
+
+        .subscribe-btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background: #2a4d8f;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            border: none;
+        }
+
+        .subscribe-btn:hover {
+            background: #1e3a8a;
+        }
+
+        .subscribe-btn:disabled {
+            background: #94a3b8;
+            cursor: not-allowed;
+        }
+
+        .loading {
+            position: relative;
+            pointer-events: none;
+        }
+
+        .loading::after {
+            content: "";
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            top: 50%;
+            left: 50%;
+            margin: -10px 0 0 -10px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 16px 24px;
+            background: #2a4d8f;
+            color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            display: none;
+            z-index: 1000;
+        }
+
+        .toast.error {
+            background: #ef4444;
+        }
+
+        .toast.success {
+            background: #10b981;
+        }
+
+        .auth-required {
+            text-align: center;
+            margin-top: 16px;
+            padding: 16px;
+            background: #f8fafc;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .auth-required p {
+            color: #64748b;
+            margin-bottom: 12px;
+        }
+
+        .auth-required a {
+            display: inline-block;
+            padding: 8px 16px;
+            background: #2a4d8f;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .auth-required a:hover {
+            background: #1e3a8a;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-header {
+                flex-direction: column;
+                gap: 16px;
+            }
+
+            .nav-menu {
+                margin: 16px 0;
+            }
+
+            .user-info {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .plans-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="subscription-container">
+        <header class="dashboard-header">
+            <div class="logo-container">
+                <img src="{{ url_for('static', filename='logo3.png') }}" alt="Kishan X Logo" class="logo">
+                <h1>Subscription Plans</h1>
+            </div>
+            {% if user %}
+            <nav class="nav-menu">
+                <a href="/" class="nav-link">Home</a>
+                <a href="/dashboard" class="nav-link">Dashboard</a>
+                <a href="/indian" class="nav-link">Indian Market</a>
+                <a href="/otc" class="nav-link">OTC Market</a>
+                <a href="/market_dashboard" class="nav-link">Market Overview</a>
+                <a href="/subscription" class="nav-link active">Subscription</a>
+                <a href="/profile" class="nav-link">Profile</a>
+            </nav>
+            <div class="user-info">
+                <span>Welcome, {{ user.username }}</span>
+                <a href="/logout" class="logout-btn">Logout</a>
+            </div>
+            {% else %}
+            <nav class="nav-menu">
+                <a href="/login" class="nav-link">Login</a>
+                <a href="/register" class="nav-link">Register</a>
+            </nav>
+            {% endif %}
+        </header>
+
+        <div class="plans-container">
+            {% for plan in plans %}
+            <div class="plan-card {% if plan.popular %}popular{% endif %}">
+                {% if plan.popular %}
+                <div class="popular-badge">Most Popular</div>
+                {% endif %}
+                <h2 class="plan-name">{{ plan.name }}</h2>
+                <div class="plan-price">{{ plan.price }}</div>
+                <div class="plan-period">per {{ plan.period }}</div>
+                <ul class="plan-features">
+                    {% for feature in plan.features %}
+                    <li>{{ feature }}</li>
+                    {% endfor %}
+                </ul>
+                {% if user %}
+                <form action="{{ url_for('subscribe', plan_id=plan.id) }}" method="POST" style="margin: 0;">
+                    <button type="submit" class="subscribe-btn" id="subscribe-{{ plan.id }}">Subscribe Now</button>
+                </form>
+                {% else %}
+                <div class="auth-required">
+                    <p>Please login to subscribe to this plan</p>
+                    <a href="{{ url_for('login', next=url_for('subscription')) }}">Login to Subscribe</a>
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = `toast ${type}`;
+            toast.style.display = 'block';
+            
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 3000);
+        }
+
+        // Add event listeners to all subscribe buttons
+        document.querySelectorAll('.subscribe-btn').forEach(button => {
+            button.addEventListener('click', async function(e) {
+                e.preventDefault();
+                const form = this.closest('form');
+                const planId = this.id.replace('subscribe-', '');
+                
+                this.classList.add('loading');
+                this.disabled = true;
+
+                try {
+                    const response = await fetch(form.action, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        showToast(data.message, 'success');
+                        setTimeout(() => {
+                            window.location.href = data.redirect;
+                        }, 1500);
+                    } else {
+                        showToast(data.error, 'error');
+                        this.classList.remove('loading');
+                        this.disabled = false;
+                    }
+                } catch (error) {
+                    showToast('An error occurred. Please try again.', 'error');
+                    this.classList.remove('loading');
+                    this.disabled = false;
+                }
+            });
+        });
+    </script>
+</body>
+</html> 
